@@ -58,7 +58,7 @@ class GalaxyRows
 
         $galaxyResult	= $GLOBALS['DATABASE']->query("SELECT SQL_BIG_RESULT DISTINCT
 		p.galaxy, p.system, p.planet, p.id, p.id_owner, p.name, p.image, p.last_update, p.diameter, p.temp_min, p.destruyed, p.der_metal, p.der_crystal, p.der_deuterium, p.id_luna, 
-		u.id as userid, u.ally_id, u.username, u.onlinetime, u.planet_cloak, u.urlaubs_modus, u.banaday, u.user_deleted, u.multi_spotted, u.immunity_until,
+		u.id as userid, u.ally_id, u.username, u.onlinetime, u.planet_cloak, u.urlaubs_modus, u.banaday, u.user_deleted, u.multi_spotted, u.immunity_until, u.is_ai,
 		m.id as m_id, m.diameter as m_diameter, m.name as m_name, m.temp_min as m_temp_min, m.last_update as m_last_update,
 		s.total_points, s.total_rank, 
 		a.id as allyid, a.ally_tag, a.ally_web, a.ally_members, a.ally_name, 
@@ -221,12 +221,13 @@ class GalaxyRows
         $this->galaxyData[$this->galaxyRow['planet']]['user']	= array(
 			'id'			=> $this->galaxyRow['userid'],
 			'planetshow'			=> $this->galaxyRow['planet'],
-			'username'		=> htmlspecialchars($this->galaxyRow['username'], ENT_QUOTES, "UTF-8"),
+			'username'		=> ($this->galaxyRow['is_ai'] == 1 ? '[NPC] ' : '').htmlspecialchars($this->galaxyRow['username'], ENT_QUOTES, "UTF-8"),
 			'rank'			=> $this->galaxyRow['total_rank'],
 			'points'		=> pretty_number($this->galaxyRow['total_points']),
-			'playerrank'	=> isModulAvalible(25)?sprintf($LNG['gl_in_the_rank'], htmlspecialchars($this->galaxyRow['username'],ENT_QUOTES,"UTF-8"), $this->galaxyRow['total_rank']):htmlspecialchars($this->galaxyRow['username'],ENT_QUOTES,"UTF-8"),
+			'playerrank'	=> isModulAvalible(25)?sprintf($LNG['gl_in_the_rank'], ($this->galaxyRow['is_ai'] == 1 ? '[NPC] ' : '').htmlspecialchars($this->galaxyRow['username'],ENT_QUOTES,"UTF-8"), $this->galaxyRow['total_rank']):($this->galaxyRow['is_ai'] == 1 ? '[NPC] ' : '').htmlspecialchars($this->galaxyRow['username'],ENT_QUOTES,"UTF-8"),
 			'class'			=> $Class,
 			'isBuddy'		=> $this->galaxyRow['buddy'] == 0,
+			'isAI'			=> $this->galaxyRow['is_ai'] == 1,
 		);
 	}
 	
