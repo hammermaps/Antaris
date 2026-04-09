@@ -56,7 +56,6 @@ class HTTPRequest
 			));
 			
 			$this->content	= curl_exec($this->ch);
-			curl_close($this->ch);
 		}
 	}
 	

@@ -87,7 +87,6 @@ class StatBanner {
 			HTTP::sendHeader('Content-type', 'image/jpg');
 			
 		ImageJPEG($image);
-		imagedestroy($image);
 	}
 	
 	function BannerError($Message) {
@@ -97,7 +96,6 @@ class StatBanner {
 		$text_color = ImageColorAllocate($im, 233, 14, 91);
 		ImageString ($im, 3, 5, 5, $Message, $text_color);
 		ImageJPEG($im);
-		imagedestroy($im);
 		exit;
 	}
 }

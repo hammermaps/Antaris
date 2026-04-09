@@ -144,7 +144,6 @@ function GetLogs($fromRev) {
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, sprintf('<?xml version="1.0" encoding="utf-8"?> <S:log-report xmlns:S="svn:"> <S:start-revision>%d</S:start-revision><S:end-revision>%d</S:end-revision><S:path></S:path><S:discover-changed-paths/></S:log-report>', $fromRev, -1));
 	$DATA	= curl_exec($ch);
-	curl_close($ch);
 	if(function_exists('xml_parser_create'))
 	{
 		$xml2Array	= new xml2Array();
@@ -215,7 +214,6 @@ class xml2Array {
 				xml_get_current_line_number($this->resParser)));
 		}
 
-		xml_parser_free($this->resParser);
 		// Changed by Deadpan110
 		//return $this->arrOutput;
 		return $this->arrOutput[0];

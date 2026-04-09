@@ -981,10 +981,8 @@ abstract class BaseFacebook
         'type' => 'CurlException',
         ),
       ));
-      curl_close($ch);
       throw $e;
     }
-    curl_close($ch);
     return $result;
   }
 

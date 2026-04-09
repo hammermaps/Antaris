@@ -126,7 +126,6 @@ if (curl_errno($ch) != 0) // cURL error
 if(DEBUG == true) {	
 error_log(date('[Y-m-d H:i e] '). "Can't connect to PayPal to validate IPN message: " . curl_error($ch) . PHP_EOL, 3, LOG_FILE);
 }
-curl_close($ch);
 exit;
 } else {
 // Log the entire HTTP response if debug is switched on.
@@ -136,7 +135,6 @@ error_log(date('[Y-m-d H:i e] '). "HTTP response of validation request: $res" . 
 // Split response headers and payload
 list($headers, $res) = explode("\r\n\r\n", $res, 2);
 }
-curl_close($ch);
 }
 // Inspect IPN validation result and act accordingly
 // check whether the payment_status is Completed
