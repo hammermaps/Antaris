@@ -16,7 +16,7 @@
  */
 
 if (php_sapi_name() !== 'cli') {
-	die('This script must be run from the command line.');
+	die('Error: This script can only be run from the command line interface (CLI).');
 }
 
 define('MODE', 'AI_DAEMON');

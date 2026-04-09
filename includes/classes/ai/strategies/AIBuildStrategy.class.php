@@ -73,7 +73,7 @@ class AIBuildStrategy
 	 */
 	public function execute()
 	{
-		global $resource, $reslist, $pricelist, $CONF;
+		global $resource, $reslist, $pricelist;
 		
 		$USER   = $this->aiPlayer->USER;
 		$PLANET = $this->aiPlayer->activePlanet;

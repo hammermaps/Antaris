@@ -124,10 +124,6 @@ class AIDaemon
 	 */
 	private function processTick($tickCount)
 	{
-		// Redefine TIMESTAMP for this tick
-		if (!defined('TIMESTAMP')) {
-			define('TIMESTAMP', time());
-		}
 		
 		$aiPlayers = $GLOBALS['DATABASE']->query(
 			"SELECT id FROM ".USERS." 

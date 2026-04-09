@@ -50,6 +50,16 @@ class AIPlayer
 	}
 	
 	/**
+	 * Determine and set the default active planet (home planet or first available)
+	 */
+	private function setDefaultActivePlanet()
+	{
+		$this->activePlanet = isset($this->PLANETS[$this->USER['id_planet']]) 
+			? $this->PLANETS[$this->USER['id_planet']] 
+			: reset($this->PLANETS);
+	}
+	
+	/**
 	 * Load all planets belonging to this AI player
 	 */
 	private function loadPlanets()
@@ -69,10 +79,7 @@ class AIPlayer
 			throw new Exception("AI Player has no planets: ".$this->userID);
 		}
 		
-		// Set active planet to home planet
-		$this->activePlanet = isset($this->PLANETS[$this->USER['id_planet']]) 
-			? $this->PLANETS[$this->USER['id_planet']] 
-			: reset($this->PLANETS);
+		$this->setDefaultActivePlanet();
 	}
 	
 	/**
@@ -121,9 +128,7 @@ class AIPlayer
 		}
 		
 		// Re-set active planet
-		$this->activePlanet = isset($this->PLANETS[$this->USER['id_planet']]) 
-			? $this->PLANETS[$this->USER['id_planet']] 
-			: reset($this->PLANETS);
+		$this->setDefaultActivePlanet();
 	}
 	
 	/**

@@ -137,8 +137,9 @@ function ShowAIPlayersCreate($template)
 			exit;
 		}
 		
-		// Generate a random password (AI doesn't need to log in)
-		$password = cryptPassword(md5(uniqid(mt_rand(), true)));
+		// Generate a secure random password (AI doesn't need to log in)
+		$randomBytes = function_exists('random_bytes') ? bin2hex(random_bytes(16)) : md5(uniqid(mt_rand(), true));
+		$password = cryptPassword($randomBytes);
 		$email = 'ai_'.strtolower(str_replace(' ', '_', $name)).'@antaris.local';
 		
 		// Create the player using the existing pattern from ShowCreatorPage
