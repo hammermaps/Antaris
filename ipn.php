@@ -9,8 +9,7 @@ $db_user = 'antarisl_thisis';
 $db_password = 'EJceRpJcPv3181';
 
 
-mysql_connect($host, $db_user, $db_password);
-mysql_select_db($db_name);
+$mysqli = new mysqli($host, $db_user, $db_password, $db_name);
 function pretty_number($n, $dec = 0)
 {
 	return number_format(floattostring($n, $dec), $dec, ',', '.');
@@ -42,8 +41,8 @@ function SendSimpleMessage($Owner, $Sender, $Time, $Type, $From, $Subject, $Mess
 	message_unread = '1', 
 	message_universe = '1';";
 
-	mysql_query($SQL);
-	mysql_query($SQ);
+	$GLOBALS['mysqli']->query($SQL);
+	$GLOBALS['mysqli']->query($SQ);
 }
 
 function  _rewardPurchase($userId, $currency, $mc_gross, $txn_id, $the_id) {
@@ -51,10 +50,10 @@ function  _rewardPurchase($userId, $currency, $mc_gross, $txn_id, $the_id) {
     
 
         // Make userid safe to use in query
-$userId = mysql_real_escape_string($userId);
+$userId = $GLOBALS['mysqli']->real_escape_string($userId);
 
-mysql_query("UPDATE `uni1_users` SET `darkmatter` = `darkmatter` + ".$currency." WHERE `id` = '".$userId."';");
-mysql_query("INSERT INTO `uni1_paysafecard_log` VALUES (null, '".mysql_escape_string($userId)."',  '".$timer."', '".$txn_id."', '".$mc_gross."','".$currency."', 'Paypal', '1', '".$the_id."');");
+$GLOBALS['mysqli']->query("UPDATE `uni1_users` SET `darkmatter` = `darkmatter` + ".$currency." WHERE `id` = '".$userId."';");
+$GLOBALS['mysqli']->query("INSERT INTO `uni1_paysafecard_log` VALUES (null, '".$GLOBALS['mysqli']->real_escape_string($userId)."',  '".$timer."', '".$txn_id."', '".$mc_gross."','".$currency."', 'Paypal', '1', '".$the_id."');");
 
 if(DEBUG == true) {
 error_log(date('[Y-m-d H:i e] '). "Verified IPN: $req ". PHP_EOL, 3, LOG_FILE);
@@ -84,15 +83,8 @@ $myPost[$keyval[0]] = urldecode($keyval[1]);
 }
 // read the post from PayPal system and add 'cmd'
 $req = 'cmd=_notify-validate';
-if(function_exists('get_magic_quotes_gpc')) {
-$get_magic_quotes_exists = true;
-}
 foreach ($myPost as $key => $value) {
-if($get_magic_quotes_exists == true && get_magic_quotes_gpc() == 1) {
-$value = urlencode(stripslashes($value));
-} else {
 $value = urlencode($value);
-}
 $req .= "&$key=$value";
 }
 // Post IPN data back to PayPal to validate the IPN data is genuine
@@ -186,6 +178,6 @@ if ($result) {
 }
 
 //Close Connection
-mysql_close();
+$GLOBALS['mysqli']->close();
 
 ?>

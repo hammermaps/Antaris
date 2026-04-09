@@ -32,25 +32,12 @@ if (isset($_POST['GLOBALS']) || isset($_GET['GLOBALS'])) {
 	exit('You cannot set the GLOBALS-array from outside the script.');
 }
 
-// Magic Quotes work around.
-// http://www.php.net/manual/de/security.magicquotes.disabling.php#91585
-if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc() == 1) {
-    function stripslashes_gpc(&$value)
-    {
-        $value = stripslashes($value);
-    }
-    array_walk_recursive($_GET, 'stripslashes_gpc');
-    array_walk_recursive($_POST, 'stripslashes_gpc');
-    array_walk_recursive($_COOKIE, 'stripslashes_gpc');
-    array_walk_recursive($_REQUEST, 'stripslashes_gpc');
-}
-
 if (function_exists('mb_internal_encoding')) {
 	mb_internal_encoding("UTF-8");
 }
 
 ignore_user_abort(true);
-error_reporting(E_ALL & ~E_STRICT);
+error_reporting(E_ALL);
 
 // If the guy forgot to set date.timezone on php.ini
 date_default_timezone_set(@date_default_timezone_get());

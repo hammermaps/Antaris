@@ -82,18 +82,7 @@ class AJAXChat {
 		
 		// Initialize custom request variables:
 		$this->initCustomRequestVars();
-		
-		// Remove slashes which have been added to user input strings if magic_quotes_gpc is On:
-		if(get_magic_quotes_gpc()) {
-			// It is safe to remove the slashes as we escape user data ourself
-			array_walk(
-				$this->_requestVars,
-				create_function(
-					'&$value, $key',
-					'if(is_string($value)) $value = stripslashes($value);'
-				)
-			);
-		}
+	}
 	}
 	
 	function initDataBaseConnection() {
@@ -1613,9 +1602,6 @@ class AJAXChat {
 	}
 	
 	function rollDice($sides) {
-		// seed with microseconds since last "whole" second:
-		mt_srand((double)microtime()*1000000);
-		
 		return mt_rand(1, $sides);
 	}
 	
@@ -3167,9 +3153,6 @@ class AJAXChat {
 						- $this->stringLength($this->getConfig('guestUserPrefix'))
 						- $this->stringLength($this->getConfig('guestUserSuffix'));
 
-		// seed with microseconds since last "whole" second:
-		mt_srand((double)microtime()*1000000);
-
 		// Create a random userName using numbers between 100000 and 999999:
 		$userName = substr(mt_rand(100000, 999999), 0, $maxLength);
 
@@ -3178,9 +3161,6 @@ class AJAXChat {
 	
 	// Guest userIDs must not interfere with existing userIDs and must be lower than privateChannelDiff:
 	function createGuestUserID() {
-		// seed with microseconds since last "whole" second:
-		mt_srand((double)microtime()*1000000);
-		
 		return mt_rand($this->getConfig('minGuestUserID'), $this->getConfig('privateChannelDiff')-1);
 	}
 

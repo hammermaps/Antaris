@@ -1851,23 +1851,8 @@ class PHPMailer {
       //      return false;
       //    }
       //  }
-      $magic_quotes = get_magic_quotes_runtime();
-      if ($magic_quotes) {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-          set_magic_quotes_runtime(0);
-        } else {
-          ini_set('magic_quotes_runtime', 0); 
-        }
-      }
       $file_buffer  = file_get_contents($path);
       $file_buffer  = $this->EncodeString($file_buffer, $encoding);
-      if ($magic_quotes) {
-        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
-          set_magic_quotes_runtime($magic_quotes);
-        } else {
-          ini_set('magic_quotes_runtime', $magic_quotes); 
-        }
-      }
       return $file_buffer;
     } catch (Exception $e) {
       $this->SetError($e->getMessage());
@@ -2061,8 +2046,8 @@ class PHPMailer {
             $c = '=20';
           }
         } elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) { // always encode "\t", which is *not* required
-          $h2 = (integer)floor($dec/16);
-          $h1 = (integer)floor($dec%16);
+          $h2 = (int)floor($dec/16);
+          $h1 = (int)floor($dec%16);
           $c = $escape.$hex[$h2].$hex[$h1];
         }
         if ( (strlen($newline) + strlen($c)) >= $line_max ) { // CRLF is not counted
