@@ -26,7 +26,7 @@ class AJAXChatDataBaseMySQL {
 			$dbConnectionConfig['host'],
 			$dbConnectionConfig['user'],
 			$dbConnectionConfig['pass'],
-			$this->_dbName
+			$dbConnectionConfig['name']
 		);
 		if(!$this->_connectionID) {
 			$this->_errno = null;
