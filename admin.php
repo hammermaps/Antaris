@@ -212,6 +212,10 @@ switch($page)
 		include_once('includes/pages/adm/ShowDumpPage.php');
 		ShowDumpPage();
 	break;
+	case 'aiplayers':
+		include_once('includes/pages/adm/ShowAIPlayersPage.php');
+		ShowAIPlayersPage();
+	break;
 	default:
 		include_once('includes/pages/adm/ShowIndexPage.php');
 		ShowIndexPage();

@@ -77,4 +77,9 @@ define('VARS'	 			, DB_PREFIX.'vars');
 define('VARS_RAPIDFIRE'		, DB_PREFIX.'vars_rapidfire');
 define('VARS_REQUIRE'	 	, DB_PREFIX.'vars_requriements');
 
+// AI-TABLES
+define('AI_CONFIG'			, DB_PREFIX.'ai_config');
+define('AI_ACTION_LOG'		, DB_PREFIX.'ai_action_log');
+define('AI_STATE'			, DB_PREFIX.'ai_state');
+
 // MOD-TABLES

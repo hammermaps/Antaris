@@ -92,6 +92,32 @@ if (MODE === 'INSTALL')
 	return;
 }
 
+if (MODE === 'AI_DAEMON')
+{
+	if(!file_exists(ROOT_PATH.'includes/config.php')) {
+		die('Config file not found.');
+	}
+	
+	require('includes/config.php');
+	require('includes/dbtables.php');
+	
+	$DATABASE	= new Database();
+	unset($database);
+	
+	Config::init();
+	$UNI		= getUniverse();
+	Config::setGlobals();
+	
+	date_default_timezone_set(Config::get('timezone'));
+	
+	require('includes/vars.php');
+	require('includes/classes/class.BuildFunctions.php');
+	require('includes/classes/class.PlanetRessUpdate.php');
+	require('includes/classes/class.FleetFunctions.php');
+	
+	return;
+}
+
 if(!file_exists(ROOT_PATH.'includes/config.php')) {
 	HTTP::redirectTo("install/index.php");
 }
