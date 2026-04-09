@@ -297,9 +297,8 @@ class AIMissionStrategy
 		
 		// Calculate distance
 		$distance = FleetFunctions::GetTargetDistance(
-			$PLANET['galaxy'], $targetGalaxy,
-			$PLANET['system'], $targetSystem,
-			$PLANET['planet'], $targetPlanet
+			array($PLANET['galaxy'], $PLANET['system'], $PLANET['planet']),
+			array($targetGalaxy, $targetSystem, $targetPlanet)
 		);
 		
 		// Calculate duration
@@ -307,7 +306,7 @@ class AIMissionStrategy
 		$duration = FleetFunctions::GetMissionDuration(10, $speedAllMin, $distance, $SpeedFactor, $USER);
 		
 		// Calculate consumption
-		$consumption = FleetFunctions::GetFleetConsumption($fleetArray, $duration, $distance, $USER, $SpeedFactor);
+		$consumption = FleetFunctions::GetFleetConsumption($fleetArray, $duration, $distance, $speedAllMin, $USER, $SpeedFactor);
 		
 		// Check enough deuterium for fuel
 		if ($PLANET[$resource[903]] < $consumption + $deuterium) {
@@ -519,7 +518,7 @@ class AIMissionStrategy
 		}
 		
 		$target = $GLOBALS['DATABASE']->getFirstRow(
-			"SELECT p.galaxy, p.system, p.planet, p.id_owner 
+			"SELECT p.galaxy, p.system, p.planet, p.id_owner, s.total_points, u.onlinetime, u.banaday 
 			FROM ".PLANETS." p 
 			JOIN ".USERS." u ON p.id_owner = u.id
 			LEFT JOIN ".STATPOINTS." s ON s.id_owner = u.id AND s.stat_type = 1
@@ -535,7 +534,24 @@ class AIMissionStrategy
 			ORDER BY RAND() LIMIT 1;"
 		);
 		
-		return !empty($target) ? $target : false;
+		if (empty($target)) {
+			return false;
+		}
+		
+		// Check newbie protection
+		$ownerPlayer = array('total_points' => $myPoints);
+		$targetPlayer = array('total_points' => isset($target['total_points']) ? $target['total_points'] : 0);
+		$playerInfo = array(
+			'banaday' => isset($target['banaday']) ? $target['banaday'] : 0,
+			'onlinetime' => isset($target['onlinetime']) ? $target['onlinetime'] : 0,
+		);
+		
+		$noobCheck = CheckNoobProtec($ownerPlayer, $targetPlayer, $playerInfo);
+		if ($noobCheck['NoobPlayer'] || $noobCheck['StrongPlayer']) {
+			return false;
+		}
+		
+		return $target;
 	}
 	
 	/**

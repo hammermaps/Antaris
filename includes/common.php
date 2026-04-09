@@ -113,6 +113,7 @@ if (MODE === 'AI_DAEMON')
 	require('includes/vars.php');
 	require('includes/classes/class.BuildFunctions.php');
 	require('includes/classes/class.PlanetRessUpdate.php');
+	require('includes/classes/class.FleetFunctions.php');
 	
 	return;
 }

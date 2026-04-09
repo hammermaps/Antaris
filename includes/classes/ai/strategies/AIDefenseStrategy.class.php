@@ -113,7 +113,7 @@ class AIDefenseStrategy
 		}
 		
 		// Calculate how many we can build
-		$maxBuildable = BuildFunctions::getMaxConstructibleElements($defenseID, $PLANET, $USER);
+		$maxBuildable = BuildFunctions::getMaxConstructibleElements($USER, $PLANET, $defenseID);
 		if ($maxBuildable < 1) {
 			return false;
 		}

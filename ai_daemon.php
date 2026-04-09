@@ -25,9 +25,6 @@ set_include_path(ROOT_PATH);
 
 // Load the game engine
 require('includes/common.php');
-require_once('includes/classes/class.BuildFunctions.php');
-require_once('includes/classes/class.PlanetRessUpdate.php');
-require_once('includes/classes/class.FleetFunctions.php');
 require_once('includes/classes/ai/AIDaemon.class.php');
 
 // Parse command

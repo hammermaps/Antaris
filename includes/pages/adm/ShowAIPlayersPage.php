@@ -191,7 +191,7 @@ function ShowAIPlayersCreate($template)
 		
 		// Create home planet
 		require_once('includes/functions/CreateOnePlanetRecord.php');
-		$planetID = CreateOnePlanetRecord($galaxy, $system, $planet, $_SESSION['adminuni'], $userID, $name, true, 0);
+		$planetID = CreateOnePlanetRecord($galaxy, $system, $planet, $_SESSION['adminuni'], $userID, $name, true, 0, 0, 0, 0, 0, 0);
 		
 		// Update user with planet info + stat entry
 		$SQL = "UPDATE ".USERS." SET 

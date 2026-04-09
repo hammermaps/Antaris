@@ -133,14 +133,13 @@ class AIColonizeStrategy
 		// Calculate fleet details
 		$speedAllMin = FleetFunctions::GetFleetMaxSpeed($fleetArray, $USER);
 		$distance = FleetFunctions::GetTargetDistance(
-			$PLANET['galaxy'], $target['galaxy'],
-			$PLANET['system'], $target['system'],
-			$PLANET['planet'], $target['planet']
+			array($PLANET['galaxy'], $PLANET['system'], $PLANET['planet']),
+			array($target['galaxy'], $target['system'], $target['planet'])
 		);
 		
 		$SpeedFactor = FleetFunctions::GetGameSpeedFactor();
 		$duration = FleetFunctions::GetMissionDuration(10, $speedAllMin, $distance, $SpeedFactor, $USER);
-		$consumption = FleetFunctions::GetFleetConsumption($fleetArray, $duration, $distance, $USER, $SpeedFactor);
+		$consumption = FleetFunctions::GetFleetConsumption($fleetArray, $duration, $distance, $speedAllMin, $USER, $SpeedFactor);
 		
 		if ($PLANET[$resource[903]] < $consumption) {
 			return false;

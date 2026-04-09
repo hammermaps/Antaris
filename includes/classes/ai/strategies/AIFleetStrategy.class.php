@@ -117,7 +117,7 @@ class AIFleetStrategy
 		}
 		
 		// Calculate how many we can build
-		$maxBuildable = BuildFunctions::getMaxConstructibleElements($shipID, $PLANET, $USER);
+		$maxBuildable = BuildFunctions::getMaxConstructibleElements($USER, $PLANET, $shipID);
 		if ($maxBuildable < 1) {
 			return false;
 		}
