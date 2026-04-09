@@ -29,7 +29,7 @@
 </tr>
 <tr>
 	<td colspan="2" style="font-size:11px; color:#888;">
-		Start daemon: <code>php ai_daemon.php start</code> | 
+		From project root: <code>php ai_daemon.php start</code> | 
 		Stop: <code>php ai_daemon.php stop</code> | 
 		Status: <code>php ai_daemon.php status</code>
 	</td>

@@ -1,5 +1,6 @@
 -- AI Player System Migration
 -- Run this SQL to add AI player support to Antaris
+-- NOTE: Table names use 'uni1_' prefix. Adjust prefix if your installation uses a different one.
 
 -- 1. Extend uni1_users table with AI fields
 ALTER TABLE `uni1_users` 

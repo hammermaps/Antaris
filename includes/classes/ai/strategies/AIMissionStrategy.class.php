@@ -15,6 +15,22 @@ class AIMissionStrategy
 {
 	private $aiPlayer;
 	
+	/**
+	 * Mission type names for logging
+	 */
+	private static $missionNames = array(
+		1  => 'Attack',
+		2  => 'ACS',
+		3  => 'Transport',
+		4  => 'Station',
+		5  => 'Hold',
+		6  => 'Spy',
+		7  => 'Colonize',
+		8  => 'Recycle',
+		9  => 'Destroy',
+		15 => 'Expedition',
+	);
+	
 	function __construct(AIPlayer $aiPlayer)
 	{
 		$this->aiPlayer = $aiPlayer;
@@ -404,8 +420,7 @@ class AIMissionStrategy
 		// Update local planet data
 		$this->aiPlayer->PLANETS[$sourcePlanetID] = $PLANET;
 		
-		$missionNames = array(1=>'Attack',2=>'ACS',3=>'Transport',4=>'Station',5=>'Hold',6=>'Spy',7=>'Colonize',8=>'Recycle',9=>'Destroy',15=>'Expedition');
-		$missionName = isset($missionNames[$mission]) ? $missionNames[$mission] : 'Unknown';
+		$missionName = isset(self::$missionNames[$mission]) ? self::$missionNames[$mission] : 'Unknown';
 		
 		$this->aiPlayer->logAction('mission', $missionName.' fleet to '.$targetGalaxy.':'.$targetSystem.':'.$targetPlanet, 'sent');
 		

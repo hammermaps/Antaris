@@ -20,6 +20,9 @@ require_once('includes/classes/ai/strategies/AIColonizeStrategy.class.php');
 
 class AIDecisionEngine
 {
+	/** Percentage chance for easy AI to perform an action (40% skip = 60% execute) */
+	const EASY_AI_ACTION_CHANCE = 60;
+	
 	private $aiPlayer;
 	private $strategies;
 	private $maxActionsPerTick;
@@ -166,8 +169,8 @@ class AIDecisionEngine
 		// Difficulty modifier: easy AI skips some actions randomly
 		if ($this->aiPlayer->getDifficulty() == 1) {
 			foreach ($priorities as $key => $val) {
-				if (mt_rand(1, 100) > 60) {
-					$priorities[$key] = 0; // 40% chance to skip
+				if (mt_rand(1, 100) > self::EASY_AI_ACTION_CHANCE) {
+					$priorities[$key] = 0;
 				}
 			}
 		}
