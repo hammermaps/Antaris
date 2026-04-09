@@ -1,113 +1,170 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.11
--- http://www.phpmyadmin.net
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: 02-Maio-2015 às 01:27
--- Versão do servidor: 5.6.21
--- PHP Version: 5.6.3
+-- Host: 10.10.17.5
+-- Erstellungszeit: 09. Apr 2026 um 14:14
+-- Server-Version: 10.11.14-MariaDB-0+deb12u2
+-- PHP-Version: 8.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `antaris`
+-- Datenbank: `antaris`
 --
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `emails`
+-- Tabellenstruktur für Tabelle `emails`
 --
 
-CREATE TABLE IF NOT EXISTS `emails` (
+CREATE TABLE `emails` (
   `email` varchar(500) NOT NULL,
   `lang` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_achats_log`
+-- Tabellenstruktur für Tabelle `uni1_achats_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_achats_log` (
-`achatID` int(11) NOT NULL,
-  `time` int(11) unsigned NOT NULL DEFAULT '0',
-  `userID` int(11) unsigned NOT NULL DEFAULT '0',
-  `message` text CHARACTER SET utf8,
-  `total_cred` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_achats_log` (
+  `achatID` int(11) NOT NULL,
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `userID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `message` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `total_cred` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_aks`
+-- Tabellenstruktur für Tabelle `uni1_ai_action_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_aks` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_ai_action_log` (
+  `id` int(11) NOT NULL,
+  `ai_user_id` int(11) NOT NULL,
+  `action_type` varchar(50) NOT NULL,
+  `action_data` text DEFAULT NULL,
+  `executed_at` int(11) NOT NULL,
+  `result` varchar(255) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `uni1_ai_config`
+--
+
+CREATE TABLE `uni1_ai_config` (
+  `id` int(11) NOT NULL,
+  `config_key` varchar(100) NOT NULL,
+  `config_value` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Daten für Tabelle `uni1_ai_config`
+--
+
+INSERT INTO `uni1_ai_config` (`id`, `config_key`, `config_value`) VALUES
+(1, 'ai_enabled', '0'),
+(2, 'ai_max_players', '10'),
+(3, 'ai_tick_interval', '60'),
+(4, 'ai_max_actions_per_tick', '3'),
+(5, 'ai_allow_attacks', '1'),
+(6, 'ai_attack_ai', '0'),
+(7, 'ai_log_actions', '1'),
+(8, 'ai_daemon_pid', ''),
+(9, 'ai_daemon_last_tick', '0');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `uni1_ai_state`
+--
+
+CREATE TABLE `uni1_ai_state` (
+  `ai_user_id` int(11) NOT NULL,
+  `current_strategy` varchar(50) NOT NULL DEFAULT 'balanced',
+  `state_data` text DEFAULT NULL,
+  `last_tick` int(11) NOT NULL DEFAULT 0,
+  `next_action_time` int(11) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `uni1_aks`
+--
+
+CREATE TABLE `uni1_aks` (
+  `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(50) DEFAULT NULL,
-  `target` int(11) unsigned NOT NULL,
+  `target` int(11) UNSIGNED NOT NULL,
   `ankunft` int(11) DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_alliance`
+-- Tabellenstruktur für Tabelle `uni1_alliance`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_alliance` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_alliance` (
+  `id` int(11) UNSIGNED NOT NULL,
   `ally_name` varchar(50) DEFAULT '',
   `ally_tag` varchar(20) DEFAULT '',
-  `ally_owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `ally_register_time` int(11) NOT NULL DEFAULT '0',
-  `ally_description` text,
+  `ally_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_register_time` int(11) NOT NULL DEFAULT 0,
+  `ally_description` text DEFAULT NULL,
   `ally_web` varchar(255) DEFAULT '',
-  `ally_text` text,
+  `ally_text` text DEFAULT NULL,
   `ally_image` varchar(255) DEFAULT '',
   `ally_request` varchar(1000) DEFAULT NULL,
-  `ally_request_notallow` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ally_request_min_points` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `ally_request_notallow` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_request_min_points` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
   `ally_owner_range` varchar(32) DEFAULT '',
-  `ally_members` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ally_stats` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `ally_diplo` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `ally_universe` tinyint(3) unsigned NOT NULL,
-  `ally_max_members` int(5) unsigned NOT NULL DEFAULT '20',
+  `ally_members` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_stats` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  `ally_diplo` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
+  `ally_universe` tinyint(3) UNSIGNED NOT NULL,
+  `ally_max_members` int(5) UNSIGNED NOT NULL DEFAULT 20,
   `ally_events` varchar(55) NOT NULL DEFAULT '',
-  `defcon` tinyint(3) unsigned NOT NULL DEFAULT '5'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `defcon` tinyint(3) UNSIGNED NOT NULL DEFAULT 5
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_alliance_ranks`
+-- Tabellenstruktur für Tabelle `uni1_alliance_ranks`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_alliance_ranks` (
-`rankID` int(11) NOT NULL,
+CREATE TABLE `uni1_alliance_ranks` (
+  `rankID` int(11) NOT NULL,
   `rankName` varchar(32) NOT NULL,
-  `allianceID` int(10) unsigned NOT NULL,
-  `MEMBERLIST` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `MANAGEAPPLY` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ROUNDMAIL` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ADMIN` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `DIPLOMATIC` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `RANKS` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `MANAGEUSERS` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `allianceID` int(10) UNSIGNED NOT NULL,
+  `MEMBERLIST` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `MANAGEAPPLY` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `ROUNDMAIL` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `ADMIN` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `DIPLOMATIC` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `RANKS` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `MANAGEUSERS` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_alliance_ranks`
+-- Daten für Tabelle `uni1_alliance_ranks`
 --
 
 INSERT INTO `uni1_alliance_ranks` (`rankID`, `rankName`, `allianceID`, `MEMBERLIST`, `MANAGEAPPLY`, `ROUNDMAIL`, `ADMIN`, `DIPLOMATIC`, `RANKS`, `MANAGEUSERS`) VALUES
@@ -116,148 +173,148 @@ INSERT INTO `uni1_alliance_ranks` (`rankID`, `rankName`, `allianceID`, `MEMBERLI
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_alliance_request`
+-- Tabellenstruktur für Tabelle `uni1_alliance_request`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_alliance_request` (
-`applyID` int(10) unsigned NOT NULL,
+CREATE TABLE `uni1_alliance_request` (
+  `applyID` int(10) UNSIGNED NOT NULL,
   `text` text NOT NULL,
-  `userID` int(10) unsigned NOT NULL,
-  `allianceID` int(10) unsigned NOT NULL,
+  `userID` int(10) UNSIGNED NOT NULL,
+  `allianceID` int(10) UNSIGNED NOT NULL,
   `time` int(11) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_banned`
+-- Tabellenstruktur für Tabelle `uni1_banned`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_banned` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_banned` (
+  `id` int(11) UNSIGNED NOT NULL,
   `who` varchar(64) NOT NULL DEFAULT '',
   `theme` varchar(500) NOT NULL,
-  `time` int(11) NOT NULL DEFAULT '0',
-  `longer` int(11) NOT NULL DEFAULT '0',
+  `time` int(11) NOT NULL DEFAULT 0,
+  `longer` int(11) NOT NULL DEFAULT 0,
   `author` varchar(64) NOT NULL DEFAULT '',
   `email` varchar(64) NOT NULL DEFAULT '',
-  `universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_buddy`
+-- Tabellenstruktur für Tabelle `uni1_buddy`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_buddy` (
-`id` int(11) unsigned NOT NULL,
-  `sender` int(11) unsigned NOT NULL DEFAULT '0',
-  `owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `state` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `time` int(11) unsigned NOT NULL DEFAULT '0',
-  `universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+CREATE TABLE `uni1_buddy` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `sender` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `state` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_buddy_request`
+-- Tabellenstruktur für Tabelle `uni1_buddy_request`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_buddy_request` (
-  `id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_buddy_request` (
+  `id` int(11) UNSIGNED NOT NULL,
   `text` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_bunker_log`
+-- Tabellenstruktur für Tabelle `uni1_bunker_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_bunker_log` (
-`logID` int(11) NOT NULL,
-  `userID` int(11) unsigned NOT NULL DEFAULT '0',
-  `time` int(11) unsigned NOT NULL DEFAULT '0',
-  `message` text CHARACTER SET utf8,
-  `type` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_bunker_log` (
+  `logID` int(11) NOT NULL,
+  `userID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `message` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_config`
+-- Tabellenstruktur für Tabelle `uni1_config`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_config` (
-`uni` int(11) NOT NULL,
+CREATE TABLE `uni1_config` (
+  `uni` int(11) NOT NULL,
   `VERSION` varchar(8) NOT NULL,
-  `sql_revision` int(11) NOT NULL DEFAULT '0',
-  `users_amount` int(11) unsigned NOT NULL DEFAULT '1',
-  `game_speed` bigint(20) unsigned NOT NULL DEFAULT '2500',
-  `fleet_speed` bigint(20) unsigned NOT NULL DEFAULT '2500',
-  `resource_multiplier` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `halt_speed` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `Fleet_Cdr` tinyint(3) unsigned NOT NULL DEFAULT '30',
-  `Defs_Cdr` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `initial_fields` smallint(5) unsigned NOT NULL DEFAULT '163',
+  `sql_revision` int(11) NOT NULL DEFAULT 0,
+  `users_amount` int(11) UNSIGNED NOT NULL DEFAULT 1,
+  `game_speed` bigint(20) UNSIGNED NOT NULL DEFAULT 2500,
+  `fleet_speed` bigint(20) UNSIGNED NOT NULL DEFAULT 2500,
+  `resource_multiplier` smallint(5) UNSIGNED NOT NULL DEFAULT 1,
+  `halt_speed` smallint(5) UNSIGNED NOT NULL DEFAULT 1,
+  `Fleet_Cdr` tinyint(3) UNSIGNED NOT NULL DEFAULT 30,
+  `Defs_Cdr` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `initial_fields` smallint(5) UNSIGNED NOT NULL DEFAULT 163,
   `uni_name` varchar(30) NOT NULL,
   `game_name` varchar(30) NOT NULL,
-  `game_disable` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `game_disable` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   `close_reason` text NOT NULL,
-  `metal_basic_income` int(11) NOT NULL DEFAULT '20',
-  `crystal_basic_income` int(11) NOT NULL DEFAULT '10',
-  `deuterium_basic_income` int(11) NOT NULL DEFAULT '0',
-  `elyrium_basic_income` int(11) unsigned NOT NULL DEFAULT '0',
-  `formation_basic_income` int(11) unsigned NOT NULL DEFAULT '0',
-  `energy_basic_income` int(11) NOT NULL DEFAULT '0',
-  `LastSettedGalaxyPos` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `LastSettedSystemPos` smallint(5) unsigned NOT NULL DEFAULT '1',
-  `LastSettedPlanetPos` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `noobprotection` int(11) NOT NULL DEFAULT '0',
-  `noobprotectiontime` int(11) NOT NULL DEFAULT '5000',
-  `noobprotectionmulti` int(11) NOT NULL DEFAULT '5',
+  `metal_basic_income` int(11) NOT NULL DEFAULT 20,
+  `crystal_basic_income` int(11) NOT NULL DEFAULT 10,
+  `deuterium_basic_income` int(11) NOT NULL DEFAULT 0,
+  `elyrium_basic_income` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `formation_basic_income` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `energy_basic_income` int(11) NOT NULL DEFAULT 0,
+  `LastSettedGalaxyPos` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `LastSettedSystemPos` smallint(5) UNSIGNED NOT NULL DEFAULT 1,
+  `LastSettedPlanetPos` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `noobprotection` int(11) NOT NULL DEFAULT 0,
+  `noobprotectiontime` int(11) NOT NULL DEFAULT 5000,
+  `noobprotectionmulti` int(11) NOT NULL DEFAULT 5,
   `forum_url` varchar(128) NOT NULL DEFAULT 'http://2moons.cc',
-  `adm_attack` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `debug` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `adm_attack` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `debug` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
   `lang` varchar(2) NOT NULL DEFAULT '',
-  `stat` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `stat_level` tinyint(3) unsigned NOT NULL DEFAULT '2',
-  `stat_last_update` int(11) NOT NULL DEFAULT '0',
-  `stat_settings` int(11) unsigned NOT NULL DEFAULT '1000',
-  `stat_update_time` tinyint(3) unsigned NOT NULL DEFAULT '25',
-  `stat_last_db_update` int(11) NOT NULL DEFAULT '0',
-  `stats_fly_lock` int(11) NOT NULL DEFAULT '0',
-  `cron_lock` int(11) NOT NULL DEFAULT '0',
-  `ts_modon` tinyint(1) NOT NULL DEFAULT '0',
+  `stat` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `stat_level` tinyint(3) UNSIGNED NOT NULL DEFAULT 2,
+  `stat_last_update` int(11) NOT NULL DEFAULT 0,
+  `stat_settings` int(11) UNSIGNED NOT NULL DEFAULT 1000,
+  `stat_update_time` tinyint(3) UNSIGNED NOT NULL DEFAULT 25,
+  `stat_last_db_update` int(11) NOT NULL DEFAULT 0,
+  `stats_fly_lock` int(11) NOT NULL DEFAULT 0,
+  `cron_lock` int(11) NOT NULL DEFAULT 0,
+  `ts_modon` tinyint(1) NOT NULL DEFAULT 0,
   `ts_server` varchar(64) NOT NULL DEFAULT '',
-  `ts_tcpport` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `ts_udpport` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `ts_timeout` tinyint(1) NOT NULL DEFAULT '1',
-  `ts_version` tinyint(1) NOT NULL DEFAULT '2',
-  `ts_cron_last` int(11) NOT NULL DEFAULT '0',
-  `ts_cron_interval` smallint(5) NOT NULL DEFAULT '5',
+  `ts_tcpport` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `ts_udpport` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `ts_timeout` tinyint(1) NOT NULL DEFAULT 1,
+  `ts_version` tinyint(1) NOT NULL DEFAULT 2,
+  `ts_cron_last` int(11) NOT NULL DEFAULT 0,
+  `ts_cron_interval` smallint(5) NOT NULL DEFAULT 5,
   `ts_login` varchar(32) NOT NULL DEFAULT '',
   `ts_password` varchar(32) NOT NULL DEFAULT '',
-  `reg_closed` tinyint(1) NOT NULL DEFAULT '0',
-  `OverviewNewsFrame` tinyint(1) NOT NULL DEFAULT '1',
+  `reg_closed` tinyint(1) NOT NULL DEFAULT 0,
+  `OverviewNewsFrame` tinyint(1) NOT NULL DEFAULT 1,
   `OverviewNewsText` text NOT NULL,
-  `capaktiv` tinyint(1) NOT NULL DEFAULT '0',
+  `capaktiv` tinyint(1) NOT NULL DEFAULT 0,
   `cappublic` varchar(42) NOT NULL DEFAULT '',
   `capprivate` varchar(42) NOT NULL DEFAULT '',
-  `min_build_time` tinyint(2) NOT NULL DEFAULT '1',
-  `mail_active` tinyint(1) NOT NULL DEFAULT '0',
-  `mail_use` tinyint(1) NOT NULL DEFAULT '0',
+  `min_build_time` tinyint(2) NOT NULL DEFAULT 1,
+  `mail_active` tinyint(1) NOT NULL DEFAULT 0,
+  `mail_use` tinyint(1) NOT NULL DEFAULT 0,
   `smtp_host` varchar(64) NOT NULL DEFAULT '',
-  `smtp_port` smallint(5) NOT NULL DEFAULT '0',
+  `smtp_port` smallint(5) NOT NULL DEFAULT 0,
   `smtp_user` varchar(64) NOT NULL DEFAULT '',
   `smtp_pass` varchar(32) NOT NULL DEFAULT '',
   `smtp_ssl` enum('','ssl','tls') NOT NULL DEFAULT '',
   `smtp_sendmail` varchar(64) NOT NULL DEFAULT '',
   `smail_path` varchar(30) NOT NULL DEFAULT '/usr/sbin/sendmail',
-  `user_valid` tinyint(1) NOT NULL DEFAULT '0',
-  `fb_on` tinyint(1) NOT NULL DEFAULT '0',
+  `user_valid` tinyint(1) NOT NULL DEFAULT 0,
+  `fb_on` tinyint(1) NOT NULL DEFAULT 0,
   `fb_apikey` varchar(42) NOT NULL DEFAULT '',
   `fb_skey` varchar(42) NOT NULL DEFAULT '',
   `ga_active` varchar(42) NOT NULL DEFAULT '0',
@@ -265,92 +322,92 @@ CREATE TABLE IF NOT EXISTS `uni1_config` (
   `moduls` varchar(100) NOT NULL DEFAULT '',
   `trade_allowed_ships` varchar(255) NOT NULL DEFAULT '202,401',
   `trade_charge` varchar(5) NOT NULL DEFAULT '30',
-  `chat_closed` tinyint(1) NOT NULL DEFAULT '0',
-  `chat_allowchan` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_allowmes` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_allowdelmes` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_logmessage` tinyint(1) NOT NULL DEFAULT '1',
-  `chat_nickchange` tinyint(1) NOT NULL DEFAULT '1',
+  `chat_closed` tinyint(1) NOT NULL DEFAULT 0,
+  `chat_allowchan` tinyint(1) NOT NULL DEFAULT 1,
+  `chat_allowmes` tinyint(1) NOT NULL DEFAULT 1,
+  `chat_allowdelmes` tinyint(1) NOT NULL DEFAULT 1,
+  `chat_logmessage` tinyint(1) NOT NULL DEFAULT 1,
+  `chat_nickchange` tinyint(1) NOT NULL DEFAULT 1,
   `chat_botname` varchar(15) NOT NULL DEFAULT '2Moons',
   `chat_channelname` varchar(15) NOT NULL DEFAULT '2Moons',
-  `chat_socket_active` tinyint(1) NOT NULL DEFAULT '0',
+  `chat_socket_active` tinyint(1) NOT NULL DEFAULT 0,
   `chat_socket_host` varchar(64) NOT NULL DEFAULT '',
   `chat_socket_ip` varchar(40) NOT NULL DEFAULT '',
-  `chat_socket_port` smallint(5) NOT NULL DEFAULT '0',
-  `chat_socket_chatid` tinyint(1) NOT NULL DEFAULT '1',
-  `max_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '9',
-  `max_system` smallint(5) unsigned NOT NULL DEFAULT '400',
-  `max_planets` tinyint(3) unsigned NOT NULL DEFAULT '15',
-  `planet_factor` float(2,1) NOT NULL DEFAULT '1.0',
-  `max_elements_build` tinyint(3) unsigned NOT NULL DEFAULT '5',
-  `max_elements_tech` tinyint(3) unsigned NOT NULL DEFAULT '2',
-  `max_elements_ships` tinyint(3) unsigned NOT NULL DEFAULT '10',
-  `min_player_planets` tinyint(3) unsigned NOT NULL DEFAULT '9',
-  `planets_tech` tinyint(4) NOT NULL DEFAULT '11',
-  `planets_officier` tinyint(4) NOT NULL DEFAULT '5',
-  `planets_per_tech` float(2,1) NOT NULL DEFAULT '0.5',
-  `max_fleet_per_build` bigint(20) unsigned NOT NULL DEFAULT '1000000',
-  `deuterium_cost_galaxy` int(11) unsigned NOT NULL DEFAULT '10',
-  `max_dm_missions` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `max_overflow` float(2,1) NOT NULL DEFAULT '1.0',
-  `moon_factor` float(2,1) NOT NULL DEFAULT '1.0',
-  `moon_chance` tinyint(3) unsigned NOT NULL DEFAULT '20',
-  `darkmatter_cost_trader` int(11) unsigned NOT NULL DEFAULT '750',
-  `factor_university` tinyint(3) unsigned NOT NULL DEFAULT '8',
-  `max_fleets_per_acs` tinyint(3) unsigned NOT NULL DEFAULT '16',
-  `debris_moon` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `vmode_min_time` int(11) NOT NULL DEFAULT '259200',
-  `gate_wait_time` int(11) NOT NULL DEFAULT '3600',
-  `metal_start` int(11) unsigned NOT NULL DEFAULT '500',
-  `crystal_start` int(11) unsigned NOT NULL DEFAULT '500',
-  `deuterium_start` int(11) unsigned NOT NULL DEFAULT '0',
-  `elyrium_start` int(11) unsigned NOT NULL DEFAULT '0',
-  `darkmatter_start` int(11) unsigned NOT NULL DEFAULT '0',
+  `chat_socket_port` smallint(5) NOT NULL DEFAULT 0,
+  `chat_socket_chatid` tinyint(1) NOT NULL DEFAULT 1,
+  `max_galaxy` tinyint(3) UNSIGNED NOT NULL DEFAULT 9,
+  `max_system` smallint(5) UNSIGNED NOT NULL DEFAULT 400,
+  `max_planets` tinyint(3) UNSIGNED NOT NULL DEFAULT 15,
+  `planet_factor` float(2,1) NOT NULL DEFAULT 1.0,
+  `max_elements_build` tinyint(3) UNSIGNED NOT NULL DEFAULT 5,
+  `max_elements_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 2,
+  `max_elements_ships` tinyint(3) UNSIGNED NOT NULL DEFAULT 10,
+  `min_player_planets` tinyint(3) UNSIGNED NOT NULL DEFAULT 9,
+  `planets_tech` tinyint(4) NOT NULL DEFAULT 11,
+  `planets_officier` tinyint(4) NOT NULL DEFAULT 5,
+  `planets_per_tech` float(2,1) NOT NULL DEFAULT 0.5,
+  `max_fleet_per_build` bigint(20) UNSIGNED NOT NULL DEFAULT 1000000,
+  `deuterium_cost_galaxy` int(11) UNSIGNED NOT NULL DEFAULT 10,
+  `max_dm_missions` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `max_overflow` float(2,1) NOT NULL DEFAULT 1.0,
+  `moon_factor` float(2,1) NOT NULL DEFAULT 1.0,
+  `moon_chance` tinyint(3) UNSIGNED NOT NULL DEFAULT 20,
+  `darkmatter_cost_trader` int(11) UNSIGNED NOT NULL DEFAULT 750,
+  `factor_university` tinyint(3) UNSIGNED NOT NULL DEFAULT 8,
+  `max_fleets_per_acs` tinyint(3) UNSIGNED NOT NULL DEFAULT 16,
+  `debris_moon` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `vmode_min_time` int(11) NOT NULL DEFAULT 259200,
+  `gate_wait_time` int(11) NOT NULL DEFAULT 3600,
+  `metal_start` int(11) UNSIGNED NOT NULL DEFAULT 500,
+  `crystal_start` int(11) UNSIGNED NOT NULL DEFAULT 500,
+  `deuterium_start` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `elyrium_start` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `darkmatter_start` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `ttf_file` varchar(128) NOT NULL DEFAULT 'styles/resource/fonts/DroidSansMono.ttf',
-  `ref_active` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `ref_bonus` int(11) unsigned NOT NULL DEFAULT '1000',
-  `ref_minpoints` bigint(20) unsigned NOT NULL DEFAULT '2000',
-  `ref_max_referals` tinyint(1) unsigned NOT NULL DEFAULT '5',
-  `del_oldstuff` tinyint(3) unsigned NOT NULL DEFAULT '3',
-  `del_user_manually` tinyint(3) unsigned NOT NULL DEFAULT '7',
-  `del_user_automatic` tinyint(3) unsigned NOT NULL DEFAULT '30',
-  `del_user_sendmail` tinyint(3) unsigned NOT NULL DEFAULT '21',
-  `sendmail_inactive` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `silo_factor` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `ref_active` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `ref_bonus` int(11) UNSIGNED NOT NULL DEFAULT 1000,
+  `ref_minpoints` bigint(20) UNSIGNED NOT NULL DEFAULT 2000,
+  `ref_max_referals` tinyint(1) UNSIGNED NOT NULL DEFAULT 5,
+  `del_oldstuff` tinyint(3) UNSIGNED NOT NULL DEFAULT 3,
+  `del_user_manually` tinyint(3) UNSIGNED NOT NULL DEFAULT 7,
+  `del_user_automatic` tinyint(3) UNSIGNED NOT NULL DEFAULT 30,
+  `del_user_sendmail` tinyint(3) UNSIGNED NOT NULL DEFAULT 21,
+  `sendmail_inactive` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `silo_factor` tinyint(1) UNSIGNED NOT NULL DEFAULT 1,
   `timezone` varchar(32) NOT NULL DEFAULT 'Europe/London',
   `dst` enum('0','1','2') NOT NULL DEFAULT '2',
-  `energySpeed` smallint(6) NOT NULL DEFAULT '1',
+  `energySpeed` smallint(6) NOT NULL DEFAULT 1,
   `disclamerAddress` text NOT NULL,
   `disclamerPhone` text NOT NULL,
   `disclamerMail` text NOT NULL,
   `disclamerNotice` text NOT NULL,
-  `alliance_create_min_points` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `lottery_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `lottery_min` int(11) unsigned NOT NULL DEFAULT '15',
-  `taxe_metal` float NOT NULL DEFAULT '0',
-  `taxe_crystal` float NOT NULL DEFAULT '0',
-  `taxe_deuterium` float NOT NULL DEFAULT '0',
-  `taxe_elyrium` float NOT NULL DEFAULT '0',
-  `bank_metal` double(50,0) unsigned NOT NULL DEFAULT '400000000000',
-  `bank_crystal` double(50,0) unsigned NOT NULL DEFAULT '300000000000',
-  `bank_deuterium` double(50,0) unsigned NOT NULL DEFAULT '200000000000',
-  `bank_elyrium` double(50,0) unsigned NOT NULL DEFAULT '100000000000',
-  `new_taxe_metal` float NOT NULL DEFAULT '0',
-  `new_taxe_crystal` float NOT NULL DEFAULT '0',
-  `new_taxe_deuterium` float NOT NULL DEFAULT '0',
-  `new_taxe_elyrium` float NOT NULL DEFAULT '0',
-  `newbank` int(11) unsigned NOT NULL DEFAULT '0',
-  `asteroid_event` int(11) unsigned NOT NULL DEFAULT '0',
-  `asteroid_metal` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `asteroid_crystal` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `asteroid_deuterium` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `globalevent` int(11) unsigned NOT NULL DEFAULT '0',
-  `globaleventsocial` int(11) unsigned NOT NULL DEFAULT '0',
-  `birthday_event` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `alliance_create_min_points` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `lottery_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `lottery_min` int(11) UNSIGNED NOT NULL DEFAULT 15,
+  `taxe_metal` float NOT NULL DEFAULT 0,
+  `taxe_crystal` float NOT NULL DEFAULT 0,
+  `taxe_deuterium` float NOT NULL DEFAULT 0,
+  `taxe_elyrium` float NOT NULL DEFAULT 0,
+  `bank_metal` double(50,0) UNSIGNED NOT NULL DEFAULT 400000000000,
+  `bank_crystal` double(50,0) UNSIGNED NOT NULL DEFAULT 300000000000,
+  `bank_deuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 200000000000,
+  `bank_elyrium` double(50,0) UNSIGNED NOT NULL DEFAULT 100000000000,
+  `new_taxe_metal` float NOT NULL DEFAULT 0,
+  `new_taxe_crystal` float NOT NULL DEFAULT 0,
+  `new_taxe_deuterium` float NOT NULL DEFAULT 0,
+  `new_taxe_elyrium` float NOT NULL DEFAULT 0,
+  `newbank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `asteroid_event` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `asteroid_metal` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `asteroid_crystal` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `asteroid_deuterium` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `globalevent` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `globaleventsocial` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `birthday_event` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_config`
+-- Daten für Tabelle `uni1_config`
 --
 
 INSERT INTO `uni1_config` (`uni`, `VERSION`, `sql_revision`, `users_amount`, `game_speed`, `fleet_speed`, `resource_multiplier`, `halt_speed`, `Fleet_Cdr`, `Defs_Cdr`, `initial_fields`, `uni_name`, `game_name`, `game_disable`, `close_reason`, `metal_basic_income`, `crystal_basic_income`, `deuterium_basic_income`, `elyrium_basic_income`, `formation_basic_income`, `energy_basic_income`, `LastSettedGalaxyPos`, `LastSettedSystemPos`, `LastSettedPlanetPos`, `noobprotection`, `noobprotectiontime`, `noobprotectionmulti`, `forum_url`, `adm_attack`, `debug`, `lang`, `stat`, `stat_level`, `stat_last_update`, `stat_settings`, `stat_update_time`, `stat_last_db_update`, `stats_fly_lock`, `cron_lock`, `ts_modon`, `ts_server`, `ts_tcpport`, `ts_udpport`, `ts_timeout`, `ts_version`, `ts_cron_last`, `ts_cron_interval`, `ts_login`, `ts_password`, `reg_closed`, `OverviewNewsFrame`, `OverviewNewsText`, `capaktiv`, `cappublic`, `capprivate`, `min_build_time`, `mail_active`, `mail_use`, `smtp_host`, `smtp_port`, `smtp_user`, `smtp_pass`, `smtp_ssl`, `smtp_sendmail`, `smail_path`, `user_valid`, `fb_on`, `fb_apikey`, `fb_skey`, `ga_active`, `ga_key`, `moduls`, `trade_allowed_ships`, `trade_charge`, `chat_closed`, `chat_allowchan`, `chat_allowmes`, `chat_allowdelmes`, `chat_logmessage`, `chat_nickchange`, `chat_botname`, `chat_channelname`, `chat_socket_active`, `chat_socket_host`, `chat_socket_ip`, `chat_socket_port`, `chat_socket_chatid`, `max_galaxy`, `max_system`, `max_planets`, `planet_factor`, `max_elements_build`, `max_elements_tech`, `max_elements_ships`, `min_player_planets`, `planets_tech`, `planets_officier`, `planets_per_tech`, `max_fleet_per_build`, `deuterium_cost_galaxy`, `max_dm_missions`, `max_overflow`, `moon_factor`, `moon_chance`, `darkmatter_cost_trader`, `factor_university`, `max_fleets_per_acs`, `debris_moon`, `vmode_min_time`, `gate_wait_time`, `metal_start`, `crystal_start`, `deuterium_start`, `elyrium_start`, `darkmatter_start`, `ttf_file`, `ref_active`, `ref_bonus`, `ref_minpoints`, `ref_max_referals`, `del_oldstuff`, `del_user_manually`, `del_user_automatic`, `del_user_sendmail`, `sendmail_inactive`, `silo_factor`, `timezone`, `dst`, `energySpeed`, `disclamerAddress`, `disclamerPhone`, `disclamerMail`, `disclamerNotice`, `alliance_create_min_points`, `lottery_time`, `lottery_min`, `taxe_metal`, `taxe_crystal`, `taxe_deuterium`, `taxe_elyrium`, `bank_metal`, `bank_crystal`, `bank_deuterium`, `bank_elyrium`, `new_taxe_metal`, `new_taxe_crystal`, `new_taxe_deuterium`, `new_taxe_elyrium`, `newbank`, `asteroid_event`, `asteroid_metal`, `asteroid_crystal`, `asteroid_deuterium`, `globalevent`, `globaleventsocial`, `birthday_event`) VALUES
@@ -359,25 +416,25 @@ INSERT INTO `uni1_config` (`uni`, `VERSION`, `sql_revision`, `users_amount`, `ga
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_cronjobs`
+-- Tabellenstruktur für Tabelle `uni1_cronjobs`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_cronjobs` (
-`cronjobID` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_cronjobs` (
+  `cronjobID` int(11) UNSIGNED NOT NULL,
   `name` varchar(32) NOT NULL,
-  `isActive` tinyint(1) NOT NULL DEFAULT '1',
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
   `min` varchar(32) NOT NULL,
   `hours` varchar(32) NOT NULL,
   `dom` varchar(32) NOT NULL,
   `month` varchar(32) NOT NULL,
   `dow` varchar(32) NOT NULL,
   `class` varchar(32) NOT NULL,
-  `nextTime` int(11) NOT NULL DEFAULT '0',
+  `nextTime` int(11) NOT NULL DEFAULT 0,
   `lock` varchar(32) DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_cronjobs`
+-- Daten für Tabelle `uni1_cronjobs`
 --
 
 INSERT INTO `uni1_cronjobs` (`cronjobID`, `name`, `isActive`, `min`, `hours`, `dom`, `month`, `dow`, `class`, `nextTime`, `lock`) VALUES
@@ -394,27 +451,28 @@ INSERT INTO `uni1_cronjobs` (`cronjobID`, `name`, `isActive`, `min`, `hours`, `d
 (12, 'Asteroid Cronjon', 1, '25', '9,15,21', '*', '*', '*', 'AsteroidCronJob', 1430551500, NULL),
 (13, 'Game Events', 1, '40', '3,7,11,15,19,23', '*', '*', '*', 'EventCronJob', 1430530800, '5ae905331baa77d78367dcef6cdbee45'),
 (14, 'Social Event', 1, '15', '18', '5,10,15,20,25,30', '*', '*', 'EventSocialCronJob', 1430842500, NULL),
-(15, 'Birtday', 1, '27', '3', '*', '*', '*', 'BirthdayCronJob', 1430530020, 'e068ef641d29478e514bfd21195b79c4');
+(15, 'Birtday', 1, '27', '3', '*', '*', '*', 'BirthdayCronJob', 1430530020, 'e068ef641d29478e514bfd21195b79c4'),
+(16, 'AI Players', 0, '*/5', '*', '*', '*', '*', 'AICronjob', 0, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_diplo`
+-- Tabellenstruktur für Tabelle `uni1_diplo`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_diplo` (
-`id` int(11) unsigned NOT NULL,
-  `owner_1` int(11) unsigned NOT NULL,
-  `owner_2` int(11) unsigned NOT NULL,
-  `level` tinyint(1) unsigned NOT NULL,
-  `accept` tinyint(1) unsigned NOT NULL,
+CREATE TABLE `uni1_diplo` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `owner_1` int(11) UNSIGNED NOT NULL,
+  `owner_2` int(11) UNSIGNED NOT NULL,
+  `level` tinyint(1) UNSIGNED NOT NULL,
+  `accept` tinyint(1) UNSIGNED NOT NULL,
   `accept_text` varchar(255) NOT NULL,
-  `time` int(11) unsigned NOT NULL DEFAULT '0',
-  `universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_diplo`
+-- Daten für Tabelle `uni1_diplo`
 --
 
 INSERT INTO `uni1_diplo` (`id`, `owner_1`, `owner_2`, `level`, `accept`, `accept_text`, `time`, `universe`) VALUES
@@ -423,100 +481,100 @@ INSERT INTO `uni1_diplo` (`id`, `owner_1`, `owner_2`, `level`, `accept`, `accept
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_explorations`
+-- Tabellenstruktur für Tabelle `uni1_explorations`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_explorations` (
-`explorationID` int(11) NOT NULL,
-  `userID` int(11) unsigned NOT NULL DEFAULT '0',
-  `state` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `type_of_search` tinyint(3) NOT NULL DEFAULT '0',
-  `start_planet_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `start_system` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `start_planet` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `end_planet_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `start_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `emd_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `population_array` text CHARACTER SET utf8,
-  `ships_array` text CHARACTER SET utf8,
-  `text` text CHARACTER SET utf16,
-  `categorie` int(11) unsigned NOT NULL DEFAULT '0',
-  `subcategorie` int(11) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `uni1_explorations` (
+  `explorationID` int(11) NOT NULL,
+  `userID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `state` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `type_of_search` tinyint(3) NOT NULL DEFAULT 0,
+  `start_planet_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `start_system` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `start_planet` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `end_planet_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `start_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `emd_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `population_array` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `ships_array` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `text` text CHARACTER SET utf16 COLLATE utf16_general_ci DEFAULT NULL,
+  `categorie` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `subcategorie` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `image` varchar(255) NOT NULL DEFAULT 'defaut.jpg'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_fleets`
+-- Tabellenstruktur für Tabelle `uni1_fleets`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_fleets` (
-`fleet_id` bigint(11) unsigned NOT NULL,
-  `fleet_owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_mission` tinyint(3) unsigned NOT NULL DEFAULT '3',
-  `fleet_amount` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `fleet_array` text,
-  `fleet_universe` tinyint(3) unsigned NOT NULL,
-  `fleet_start_time` int(11) NOT NULL DEFAULT '0',
-  `fleet_start_id` int(11) unsigned NOT NULL,
-  `fleet_start_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_start_system` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `fleet_start_planet` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_start_type` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `fleet_end_time` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_stay` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_id` int(11) unsigned NOT NULL,
-  `fleet_end_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_end_system` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `fleet_end_planet` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_end_type` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `fleet_target_obj` smallint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_metal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_crystal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_deuterium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_elyrium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_301` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_302` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_303` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_304` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_305` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_306` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_307` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_309` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_darkmatter` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_target_owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_group` int(10) unsigned NOT NULL DEFAULT '0',
-  `fleet_mess` tinyint(3) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `uni1_fleets` (
+  `fleet_id` bigint(11) UNSIGNED NOT NULL,
+  `fleet_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_mission` tinyint(3) UNSIGNED NOT NULL DEFAULT 3,
+  `fleet_amount` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_array` text DEFAULT NULL,
+  `fleet_universe` tinyint(3) UNSIGNED NOT NULL,
+  `fleet_start_time` int(11) NOT NULL DEFAULT 0,
+  `fleet_start_id` int(11) UNSIGNED NOT NULL,
+  `fleet_start_galaxy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_start_system` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_start_planet` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_start_type` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `fleet_end_time` int(11) NOT NULL DEFAULT 0,
+  `fleet_end_stay` int(11) NOT NULL DEFAULT 0,
+  `fleet_end_id` int(11) UNSIGNED NOT NULL,
+  `fleet_end_galaxy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_end_system` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_end_planet` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_end_type` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `fleet_target_obj` smallint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_metal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_crystal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_deuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_elyrium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_301` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_302` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_303` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_304` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_305` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_306` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_307` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_309` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_darkmatter` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_target_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_group` int(10) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_mess` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `start_time` int(11) DEFAULT NULL,
-  `fleet_busy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `hasCanceled` tinyint(1) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=1858 DEFAULT CHARSET=utf8;
+  `fleet_busy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `hasCanceled` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_fleets_manage`
+-- Tabellenstruktur für Tabelle `uni1_fleets_manage`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_fleets_manage` (
-`manageID` int(11) NOT NULL,
-  `userID` int(11) unsigned NOT NULL DEFAULT '0',
-  `manage_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `ship202` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship203` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship204` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship205` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship206` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship207` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship211` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship214` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship215` int(11) unsigned NOT NULL DEFAULT '0',
-  `ship216` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_fleets_manage` (
+  `manageID` int(11) NOT NULL,
+  `userID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `manage_name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `ship202` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship203` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship204` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship205` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship206` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship207` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship211` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship214` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship215` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ship216` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Extraindo dados da tabela `uni1_fleets_manage`
+-- Daten für Tabelle `uni1_fleets_manage`
 --
 
 INSERT INTO `uni1_fleets_manage` (`manageID`, `userID`, `manage_name`, `ship202`, `ship203`, `ship204`, `ship205`, `ship206`, `ship207`, `ship211`, `ship214`, `ship215`, `ship216`) VALUES
@@ -532,45 +590,45 @@ INSERT INTO `uni1_fleets_manage` (`manageID`, `userID`, `manage_name`, `ship202`
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_fleet_event`
+-- Tabellenstruktur für Tabelle `uni1_fleet_event`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_fleet_event` (
+CREATE TABLE `uni1_fleet_event` (
   `fleetID` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   `lock` varchar(32) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_ipblock`
+-- Tabellenstruktur für Tabelle `uni1_ipblock`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_ipblock` (
-`ipblockID` int(11) NOT NULL,
-  `userID` int(11) unsigned NOT NULL DEFAULT '0',
-  `secondID` int(11) unsigned NOT NULL DEFAULT '0',
-  `time` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_ipblock` (
+  `ipblockID` int(11) NOT NULL,
+  `userID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `secondID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_iplog`
+-- Tabellenstruktur für Tabelle `uni1_iplog`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_iplog` (
-`logID` int(11) NOT NULL,
-  `timestamp` int(11) unsigned NOT NULL DEFAULT '0',
-  `ipaddress` text CHARACTER SET utf8,
-  `browser` text CHARACTER SET utf8,
-  `os` text CHARACTER SET utf8,
-  `userID` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=212 DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_iplog` (
+  `logID` int(11) NOT NULL,
+  `timestamp` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ipaddress` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `browser` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `os` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `userID` int(11) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Extraindo dados da tabela `uni1_iplog`
+-- Daten für Tabelle `uni1_iplog`
 --
 
 INSERT INTO `uni1_iplog` (`logID`, `timestamp`, `ipaddress`, `browser`, `os`, `userID`) VALUES
@@ -789,185 +847,185 @@ INSERT INTO `uni1_iplog` (`logID`, `timestamp`, `ipaddress`, `browser`, `os`, `u
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_log`
+-- Tabellenstruktur für Tabelle `uni1_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_log` (
-`id` int(11) unsigned NOT NULL,
-  `mode` tinyint(3) unsigned NOT NULL,
-  `admin` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_log` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `mode` tinyint(3) UNSIGNED NOT NULL,
+  `admin` int(11) UNSIGNED NOT NULL,
   `target` int(11) NOT NULL,
-  `time` int(11) unsigned NOT NULL,
+  `time` int(11) UNSIGNED NOT NULL,
   `data` text NOT NULL,
   `universe` tinyint(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_log_fleets`
+-- Tabellenstruktur für Tabelle `uni1_log_fleets`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_log_fleets` (
-  `fleet_id` bigint(11) unsigned NOT NULL,
-  `fleet_owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_mission` tinyint(3) unsigned NOT NULL DEFAULT '3',
-  `fleet_amount` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `fleet_array` text,
-  `fleet_universe` tinyint(3) unsigned NOT NULL,
-  `fleet_start_time` int(11) NOT NULL DEFAULT '0',
-  `fleet_start_id` int(11) unsigned NOT NULL,
-  `fleet_start_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_start_system` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `fleet_start_planet` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_start_type` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `fleet_end_time` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_stay` int(11) NOT NULL DEFAULT '0',
-  `fleet_end_id` int(11) unsigned NOT NULL,
-  `fleet_end_galaxy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_end_system` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `fleet_end_planet` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_end_type` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `fleet_target_obj` smallint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_metal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_crystal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_deuterium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_elyrium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_301` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_302` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_303` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_304` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_305` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_306` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_307` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_population_309` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_resource_darkmatter` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_target_owner` int(11) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `uni1_log_fleets` (
+  `fleet_id` bigint(11) UNSIGNED NOT NULL,
+  `fleet_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_mission` tinyint(3) UNSIGNED NOT NULL DEFAULT 3,
+  `fleet_amount` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_array` text DEFAULT NULL,
+  `fleet_universe` tinyint(3) UNSIGNED NOT NULL,
+  `fleet_start_time` int(11) NOT NULL DEFAULT 0,
+  `fleet_start_id` int(11) UNSIGNED NOT NULL,
+  `fleet_start_galaxy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_start_system` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_start_planet` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_start_type` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `fleet_end_time` int(11) NOT NULL DEFAULT 0,
+  `fleet_end_stay` int(11) NOT NULL DEFAULT 0,
+  `fleet_end_id` int(11) UNSIGNED NOT NULL,
+  `fleet_end_galaxy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_end_system` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_end_planet` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_end_type` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `fleet_target_obj` smallint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_metal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_crystal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_deuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_elyrium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_301` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_302` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_303` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_304` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_305` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_306` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_307` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_population_309` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_resource_darkmatter` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_target_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `fleet_group` varchar(15) NOT NULL DEFAULT '0',
-  `fleet_mess` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `fleet_mess` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `start_time` int(11) DEFAULT NULL,
-  `fleet_busy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fleet_state` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `fleet_busy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_state` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_lostpassword`
+-- Tabellenstruktur für Tabelle `uni1_lostpassword`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_lostpassword` (
-  `userID` int(10) unsigned NOT NULL,
+CREATE TABLE `uni1_lostpassword` (
+  `userID` int(10) UNSIGNED NOT NULL,
   `key` varchar(32) NOT NULL,
-  `time` int(10) unsigned NOT NULL,
-  `hasChanged` tinyint(1) NOT NULL DEFAULT '0',
+  `time` int(10) UNSIGNED NOT NULL,
+  `hasChanged` tinyint(1) NOT NULL DEFAULT 0,
   `fromIP` varchar(40) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_loteria`
+-- Tabellenstruktur für Tabelle `uni1_loteria`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_loteria` (
+CREATE TABLE `uni1_loteria` (
   `ID` int(11) NOT NULL,
-  `user` varchar(255) COLLATE latin1_spanish_ci NOT NULL,
+  `user` varchar(255) NOT NULL,
   `tickets` int(5) NOT NULL,
-  `universe` tinyint(3) unsigned NOT NULL DEFAULT '0'
+  `universe` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_loteria_log`
+-- Tabellenstruktur für Tabelle `uni1_loteria_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_loteria_log` (
+CREATE TABLE `uni1_loteria_log` (
   `username` varchar(255) NOT NULL,
   `time` int(11) NOT NULL,
   `prize` int(11) NOT NULL,
-  `universe` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `universe` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_messages`
+-- Tabellenstruktur für Tabelle `uni1_messages`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_messages` (
-`message_id` bigint(20) unsigned NOT NULL,
-  `message_owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `message_sender` int(11) unsigned NOT NULL DEFAULT '0',
-  `message_time` int(11) NOT NULL DEFAULT '0',
-  `message_type` tinyint(3) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `uni1_messages` (
+  `message_id` bigint(20) UNSIGNED NOT NULL,
+  `message_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `message_sender` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `message_time` int(11) NOT NULL DEFAULT 0,
+  `message_type` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `message_from` varchar(128) DEFAULT NULL,
   `message_subject` varchar(255) DEFAULT NULL,
-  `message_text` text,
-  `message_unread` tinyint(4) NOT NULL DEFAULT '1',
-  `message_universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `message_text` text DEFAULT NULL,
+  `message_unread` tinyint(4) NOT NULL DEFAULT 1,
+  `message_universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_message_banned`
+-- Tabellenstruktur für Tabelle `uni1_message_banned`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_message_banned` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_message_banned` (
+  `id` int(11) UNSIGNED NOT NULL,
   `who` varchar(64) NOT NULL DEFAULT '',
   `theme` varchar(500) NOT NULL,
-  `time` int(11) NOT NULL DEFAULT '0',
-  `longer` int(11) NOT NULL DEFAULT '0',
+  `time` int(11) NOT NULL DEFAULT 0,
+  `longer` int(11) NOT NULL DEFAULT 0,
   `author` varchar(64) NOT NULL DEFAULT '',
   `email` varchar(64) NOT NULL DEFAULT '',
-  `universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_minichat`
+-- Tabellenstruktur für Tabelle `uni1_minichat`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_minichat` (
-`id` int(32) NOT NULL,
+CREATE TABLE `uni1_minichat` (
+  `id` int(32) NOT NULL,
   `pseudo` varchar(32) NOT NULL,
-  `alliance` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `alliance` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
   `message` varchar(255) NOT NULL,
   `timestamp` int(255) NOT NULL,
   `color` varchar(55) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_multi`
+-- Tabellenstruktur für Tabelle `uni1_multi`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_multi` (
-`multiID` int(11) NOT NULL,
+CREATE TABLE `uni1_multi` (
+  `multiID` int(11) NOT NULL,
   `userID` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_news`
+-- Tabellenstruktur für Tabelle `uni1_news`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_news` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_news` (
+  `id` int(11) UNSIGNED NOT NULL,
   `user` varchar(64) NOT NULL,
   `date` int(11) NOT NULL,
   `title` varchar(64) NOT NULL,
   `text` text NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_news`
+-- Daten für Tabelle `uni1_news`
 --
 
 INSERT INTO `uni1_news` (`id`, `user`, `date`, `title`, `text`) VALUES
@@ -976,20 +1034,20 @@ INSERT INTO `uni1_news` (`id`, `user`, `date`, `title`, `text`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_newsfeed`
+-- Tabellenstruktur für Tabelle `uni1_newsfeed`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_newsfeed` (
-`feedID` int(11) NOT NULL,
-  `username` int(11) NOT NULL DEFAULT '0',
-  `date` int(11) unsigned NOT NULL DEFAULT '0',
-  `message` text CHARACTER SET utf8 NOT NULL,
-  `accepted` int(11) unsigned NOT NULL DEFAULT '0',
-  `valid_until` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_newsfeed` (
+  `feedID` int(11) NOT NULL,
+  `username` int(11) NOT NULL DEFAULT 0,
+  `date` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `message` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `accepted` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `valid_until` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Extraindo dados da tabela `uni1_newsfeed`
+-- Daten für Tabelle `uni1_newsfeed`
 --
 
 INSERT INTO `uni1_newsfeed` (`feedID`, `username`, `date`, `message`, `accepted`, `valid_until`) VALUES
@@ -998,178 +1056,178 @@ INSERT INTO `uni1_newsfeed` (`feedID`, `username`, `date`, `message`, `accepted`
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_notes`
+-- Tabellenstruktur für Tabelle `uni1_notes`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_notes` (
-`id` int(11) NOT NULL,
-  `owner` int(11) unsigned DEFAULT NULL,
+CREATE TABLE `uni1_notes` (
+  `id` int(11) NOT NULL,
+  `owner` int(11) UNSIGNED DEFAULT NULL,
   `time` int(11) DEFAULT NULL,
-  `priority` tinyint(1) unsigned DEFAULT '1',
+  `priority` tinyint(1) UNSIGNED DEFAULT 1,
   `title` varchar(32) DEFAULT NULL,
-  `text` text,
-  `universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `text` text DEFAULT NULL,
+  `universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_paypal`
+-- Tabellenstruktur für Tabelle `uni1_paypal`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_paypal` (
-`id` int(11) NOT NULL,
+CREATE TABLE `uni1_paypal` (
+  `id` int(11) NOT NULL,
   `player` int(11) NOT NULL,
   `amount` int(11) NOT NULL,
   `timestamp` int(11) NOT NULL,
   `price` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_paypal_log`
+-- Tabellenstruktur für Tabelle `uni1_paypal_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_paypal_log` (
-`id` int(11) NOT NULL,
+CREATE TABLE `uni1_paypal_log` (
+  `id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   `darkmatter` double(50,0) DEFAULT NULL,
   `time` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_paysafecard_log`
+-- Tabellenstruktur für Tabelle `uni1_paysafecard_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_paysafecard_log` (
-`payID` int(11) NOT NULL,
-  `userID` int(11) unsigned NOT NULL DEFAULT '0',
-  `time` int(11) unsigned NOT NULL DEFAULT '0',
-  `pinCode` text,
-  `pinPrice` int(11) unsigned NOT NULL DEFAULT '0',
-  `pinCredits` int(11) unsigned NOT NULL DEFAULT '0',
+CREATE TABLE `uni1_paysafecard_log` (
+  `payID` int(11) NOT NULL,
+  `userID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `pinCode` text DEFAULT NULL,
+  `pinPrice` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `pinCredits` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `pinType` varchar(255) DEFAULT NULL,
-  `pinAprouved` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `pinAprouved` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
   `key` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_planets`
+-- Tabellenstruktur für Tabelle `uni1_planets`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_planets` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_planets` (
+  `id` int(11) UNSIGNED NOT NULL,
   `name` varchar(20) DEFAULT 'Hauptplanet',
-  `id_owner` int(11) unsigned DEFAULT NULL,
-  `universe` tinyint(3) unsigned NOT NULL,
-  `galaxy` tinyint(3) NOT NULL DEFAULT '0',
-  `system` smallint(5) NOT NULL DEFAULT '0',
-  `planet` tinyint(3) NOT NULL DEFAULT '0',
+  `id_owner` int(11) UNSIGNED DEFAULT NULL,
+  `universe` tinyint(3) UNSIGNED NOT NULL,
+  `galaxy` tinyint(3) NOT NULL DEFAULT 0,
+  `system` smallint(5) NOT NULL DEFAULT 0,
+  `planet` tinyint(3) NOT NULL DEFAULT 0,
   `last_update` int(11) DEFAULT NULL,
   `planet_type` enum('1','3') NOT NULL DEFAULT '1',
-  `destruyed` int(11) NOT NULL DEFAULT '0',
-  `b_building` int(11) NOT NULL DEFAULT '0',
-  `b_building_id` text,
-  `b_hangar` int(11) NOT NULL DEFAULT '0',
-  `b_hangar_id` text,
-  `b_hangar_plus` int(11) NOT NULL DEFAULT '0',
-  `b_defense` int(11) NOT NULL DEFAULT '0',
-  `b_defense_id` text,
-  `b_defense_plus` int(11) NOT NULL DEFAULT '0',
+  `destruyed` int(11) NOT NULL DEFAULT 0,
+  `b_building` int(11) NOT NULL DEFAULT 0,
+  `b_building_id` text DEFAULT NULL,
+  `b_hangar` int(11) NOT NULL DEFAULT 0,
+  `b_hangar_id` text DEFAULT NULL,
+  `b_hangar_plus` int(11) NOT NULL DEFAULT 0,
+  `b_defense` int(11) NOT NULL DEFAULT 0,
+  `b_defense_id` text DEFAULT NULL,
+  `b_defense_plus` int(11) NOT NULL DEFAULT 0,
   `image` varchar(32) NOT NULL DEFAULT 'normaltempplanet01',
-  `diameter` int(11) unsigned NOT NULL DEFAULT '12800',
-  `field_current` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `field_max` smallint(5) unsigned NOT NULL DEFAULT '163',
-  `temp_min` int(3) NOT NULL DEFAULT '-17',
-  `temp_max` int(3) NOT NULL DEFAULT '23',
+  `diameter` int(11) UNSIGNED NOT NULL DEFAULT 12800,
+  `field_current` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `field_max` smallint(5) UNSIGNED NOT NULL DEFAULT 163,
+  `temp_min` int(3) NOT NULL DEFAULT -17,
+  `temp_max` int(3) NOT NULL DEFAULT 23,
   `eco_hash` varchar(32) NOT NULL DEFAULT '',
-  `formation` int(11) unsigned NOT NULL DEFAULT '0',
-  `formation_used` bigint(11) unsigned NOT NULL DEFAULT '0',
-  `metal` double(50,6) unsigned NOT NULL DEFAULT '0.000000',
-  `metal_perhour` double(50,6) NOT NULL DEFAULT '0.000000',
-  `metal_max` double(50,0) unsigned DEFAULT '100000',
-  `crystal` double(50,6) unsigned NOT NULL DEFAULT '0.000000',
-  `crystal_perhour` double(50,6) NOT NULL DEFAULT '0.000000',
-  `crystal_max` double(50,0) unsigned DEFAULT '100000',
-  `deuterium` double(50,6) unsigned NOT NULL DEFAULT '0.000000',
-  `deuterium_perhour` double(50,6) NOT NULL DEFAULT '0.000000',
-  `deuterium_max` double(50,0) unsigned DEFAULT '100000',
-  `elyrium` double(50,6) unsigned NOT NULL DEFAULT '0.000000',
-  `elyrium_perhour` double(50,6) unsigned NOT NULL DEFAULT '0.000000',
-  `elyrium_max` double(50,0) unsigned NOT NULL DEFAULT '100000',
-  `energy_used` double(50,0) NOT NULL DEFAULT '0',
-  `energy` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `metal_mine` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `metal_mine_extract` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `crystal_mine` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `crystal_mine_extract` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `deuterium_sintetizer` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `deuterium_sintetizer_extract` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `elyrium_mine` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `elyrium_mine_extract` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `solar_plant` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `solar_plant_extract` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `fusion_plant` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `robot_factory` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `nano_factory` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `hangar` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `metal_store` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `crystal_store` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `deuterium_store` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `elyrium_store` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `laboratory` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `terraformer` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `university` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ally_deposit` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `silo` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `mondbasis` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `phalanx` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `sprungtor` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `antaris_headpost` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `headquarters_antaris` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `barracks` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `defense_base` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `small_ship_cargo` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `big_ship_cargo` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `light_hunter` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `heavy_hunter` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `crusher` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `battle_ship` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `colonizer` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `recycler` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `spy_sonde` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `bomber_ship` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `solar_satelit` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `destructor` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `dearth_star` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `battleship` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `lune_noir` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `ev_transporter` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `star_crasher` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `giga_recykler` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `dm_ship` bigint(20) NOT NULL DEFAULT '0',
-  `elyrium_reactor` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `energy_modulator` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `mid_recycler` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `spy_sonde_portal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `orbital_station` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `misil_launcher` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `small_laser` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `big_laser` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `gauss_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `ionic_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `buster_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `small_protection_shield` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `planet_protector` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `big_protection_shield` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `graviton_canyon` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `interceptor_misil` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `interplanetary_misil` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `formation` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `formation_used` bigint(11) UNSIGNED NOT NULL DEFAULT 0,
+  `metal` double(50,6) UNSIGNED NOT NULL DEFAULT 0.000000,
+  `metal_perhour` double(50,6) NOT NULL DEFAULT 0.000000,
+  `metal_max` double(50,0) UNSIGNED DEFAULT 100000,
+  `crystal` double(50,6) UNSIGNED NOT NULL DEFAULT 0.000000,
+  `crystal_perhour` double(50,6) NOT NULL DEFAULT 0.000000,
+  `crystal_max` double(50,0) UNSIGNED DEFAULT 100000,
+  `deuterium` double(50,6) UNSIGNED NOT NULL DEFAULT 0.000000,
+  `deuterium_perhour` double(50,6) NOT NULL DEFAULT 0.000000,
+  `deuterium_max` double(50,0) UNSIGNED DEFAULT 100000,
+  `elyrium` double(50,6) UNSIGNED NOT NULL DEFAULT 0.000000,
+  `elyrium_perhour` double(50,6) UNSIGNED NOT NULL DEFAULT 0.000000,
+  `elyrium_max` double(50,0) UNSIGNED NOT NULL DEFAULT 100000,
+  `energy_used` double(50,0) NOT NULL DEFAULT 0,
+  `energy` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `metal_mine` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `metal_mine_extract` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `crystal_mine` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `crystal_mine_extract` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `deuterium_sintetizer` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `deuterium_sintetizer_extract` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `elyrium_mine` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `elyrium_mine_extract` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `solar_plant` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `solar_plant_extract` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `fusion_plant` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `robot_factory` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `nano_factory` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `hangar` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `metal_store` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `crystal_store` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `deuterium_store` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `elyrium_store` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `laboratory` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `terraformer` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `university` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_deposit` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `silo` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `mondbasis` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `phalanx` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `sprungtor` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `antaris_headpost` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `headquarters_antaris` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `barracks` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `defense_base` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `small_ship_cargo` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `big_ship_cargo` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `light_hunter` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `heavy_hunter` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `crusher` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `battle_ship` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `colonizer` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `recycler` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `spy_sonde` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `bomber_ship` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `solar_satelit` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `destructor` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `dearth_star` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `battleship` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `lune_noir` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `ev_transporter` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `star_crasher` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `giga_recykler` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `dm_ship` bigint(20) NOT NULL DEFAULT 0,
+  `elyrium_reactor` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `energy_modulator` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `mid_recycler` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `spy_sonde_portal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `orbital_station` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `misil_launcher` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `small_laser` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `big_laser` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `gauss_canyon` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `ionic_canyon` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `buster_canyon` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `small_protection_shield` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `planet_protector` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `big_protection_shield` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `graviton_canyon` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `interceptor_misil` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `interplanetary_misil` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
   `metal_mine_porcent` enum('0','1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '10',
   `metal_mine_extract_porcent` enum('0','1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '10',
   `crystal_mine_porcent` enum('0','1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '10',
@@ -1183,52 +1241,52 @@ CREATE TABLE IF NOT EXISTS `uni1_planets` (
   `fusion_plant_porcent` enum('0','1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '10',
   `solar_satelit_porcent` enum('0','1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '10',
   `barracks_porcent` enum('0','1','2','3','4','5','6','7','8','9','10') NOT NULL DEFAULT '10',
-  `last_jump_time` int(11) NOT NULL DEFAULT '0',
-  `der_metal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `der_crystal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `der_deuterium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `id_luna` int(11) NOT NULL DEFAULT '0',
-  `teleport_portal` int(11) unsigned NOT NULL DEFAULT '1',
-  `teleport_portal_timer` int(11) unsigned NOT NULL DEFAULT '0',
-  `force_field_timer` int(11) unsigned NOT NULL DEFAULT '0',
-  `force_field_timer_bis` int(11) unsigned NOT NULL DEFAULT '0',
-  `siege_on` int(11) unsigned NOT NULL DEFAULT '0',
-  `ordernumber` int(11) unsigned NOT NULL DEFAULT '0',
-  `metal_bunker` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `crystal_bunker` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `deuterium_bunker` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `elyrium_bunker` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `metal_bunker_in` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `crystal_bunker_in` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `deuterium_bunker_in` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `elyrium_bunker_in` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `civil` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `technician` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `scientist` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `archaeologist` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `diplomat` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `soldier` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `adv_soldier` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `pilot` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `antaris` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `technician_used` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `scientis_used` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `civil_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `technician_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `scientist_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `archaeologist_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `diplomat_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `soldier_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `adv_soldier_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `pilot_prod` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `colo_metal` int(11) NOT NULL DEFAULT '0',
-  `colo_crystal` int(11) NOT NULL DEFAULT '0',
-  `colo_deut` int(11) NOT NULL DEFAULT '0',
-  `colo_elyrium` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=1888 DEFAULT CHARSET=utf8;
+  `last_jump_time` int(11) NOT NULL DEFAULT 0,
+  `der_metal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `der_crystal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `der_deuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `id_luna` int(11) NOT NULL DEFAULT 0,
+  `teleport_portal` int(11) UNSIGNED NOT NULL DEFAULT 1,
+  `teleport_portal_timer` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `force_field_timer` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `force_field_timer_bis` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `siege_on` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ordernumber` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `metal_bunker` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `crystal_bunker` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `deuterium_bunker` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `elyrium_bunker` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `metal_bunker_in` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `crystal_bunker_in` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `deuterium_bunker_in` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `elyrium_bunker_in` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `civil` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `technician` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `scientist` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `archaeologist` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `diplomat` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `soldier` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `adv_soldier` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `pilot` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `antaris` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `technician_used` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `scientis_used` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `civil_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `technician_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `scientist_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `archaeologist_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `diplomat_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `soldier_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `adv_soldier_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `pilot_prod` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `colo_metal` int(11) NOT NULL DEFAULT 0,
+  `colo_crystal` int(11) NOT NULL DEFAULT 0,
+  `colo_deut` int(11) NOT NULL DEFAULT 0,
+  `colo_elyrium` int(11) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_planets`
+-- Daten für Tabelle `uni1_planets`
 --
 
 INSERT INTO `uni1_planets` (`id`, `name`, `id_owner`, `universe`, `galaxy`, `system`, `planet`, `last_update`, `planet_type`, `destruyed`, `b_building`, `b_building_id`, `b_hangar`, `b_hangar_id`, `b_hangar_plus`, `b_defense`, `b_defense_id`, `b_defense_plus`, `image`, `diameter`, `field_current`, `field_max`, `temp_min`, `temp_max`, `eco_hash`, `formation`, `formation_used`, `metal`, `metal_perhour`, `metal_max`, `crystal`, `crystal_perhour`, `crystal_max`, `deuterium`, `deuterium_perhour`, `deuterium_max`, `elyrium`, `elyrium_perhour`, `elyrium_max`, `energy_used`, `energy`, `metal_mine`, `metal_mine_extract`, `crystal_mine`, `crystal_mine_extract`, `deuterium_sintetizer`, `deuterium_sintetizer_extract`, `elyrium_mine`, `elyrium_mine_extract`, `solar_plant`, `solar_plant_extract`, `fusion_plant`, `robot_factory`, `nano_factory`, `hangar`, `metal_store`, `crystal_store`, `deuterium_store`, `elyrium_store`, `laboratory`, `terraformer`, `university`, `ally_deposit`, `silo`, `mondbasis`, `phalanx`, `sprungtor`, `antaris_headpost`, `headquarters_antaris`, `barracks`, `defense_base`, `small_ship_cargo`, `big_ship_cargo`, `light_hunter`, `heavy_hunter`, `crusher`, `battle_ship`, `colonizer`, `recycler`, `spy_sonde`, `bomber_ship`, `solar_satelit`, `destructor`, `dearth_star`, `battleship`, `lune_noir`, `ev_transporter`, `star_crasher`, `giga_recykler`, `dm_ship`, `elyrium_reactor`, `energy_modulator`, `mid_recycler`, `spy_sonde_portal`, `orbital_station`, `misil_launcher`, `small_laser`, `big_laser`, `gauss_canyon`, `ionic_canyon`, `buster_canyon`, `small_protection_shield`, `planet_protector`, `big_protection_shield`, `graviton_canyon`, `interceptor_misil`, `interplanetary_misil`, `metal_mine_porcent`, `metal_mine_extract_porcent`, `crystal_mine_porcent`, `crystal_mine_extract_porcent`, `deuterium_sintetizer_porcent`, `deuterium_sintetizer_extract_porcent`, `solar_plant_porcent`, `solar_plant_extract_porcent`, `elyrium_mine_porcent`, `elyrium_mine_extract_porcent`, `fusion_plant_porcent`, `solar_satelit_porcent`, `barracks_porcent`, `last_jump_time`, `der_metal`, `der_crystal`, `der_deuterium`, `id_luna`, `teleport_portal`, `teleport_portal_timer`, `force_field_timer`, `force_field_timer_bis`, `siege_on`, `ordernumber`, `metal_bunker`, `crystal_bunker`, `deuterium_bunker`, `elyrium_bunker`, `metal_bunker_in`, `crystal_bunker_in`, `deuterium_bunker_in`, `elyrium_bunker_in`, `civil`, `technician`, `scientist`, `archaeologist`, `diplomat`, `soldier`, `adv_soldier`, `pilot`, `antaris`, `technician_used`, `scientis_used`, `civil_prod`, `technician_prod`, `scientist_prod`, `archaeologist_prod`, `diplomat_prod`, `soldier_prod`, `adv_soldier_prod`, `pilot_prod`, `colo_metal`, `colo_crystal`, `colo_deut`, `colo_elyrium`) VALUES
@@ -1237,76 +1295,76 @@ INSERT INTO `uni1_planets` (`id`, `name`, `id_owner`, `universe`, `galaxy`, `sys
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_raports`
+-- Tabellenstruktur für Tabelle `uni1_raports`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_raports` (
+CREATE TABLE `uni1_raports` (
   `rid` varchar(32) NOT NULL,
   `raport` text NOT NULL,
   `time` int(11) NOT NULL,
   `attacker` varchar(255) NOT NULL DEFAULT '',
   `defender` varchar(255) NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_records`
+-- Tabellenstruktur für Tabelle `uni1_records`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_records` (
-  `userID` int(10) unsigned NOT NULL,
-  `elementID` smallint(5) unsigned NOT NULL,
-  `level` bigint(20) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `uni1_records` (
+  `userID` int(10) UNSIGNED NOT NULL,
+  `elementID` smallint(5) UNSIGNED NOT NULL,
+  `level` bigint(20) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_reward`
+-- Tabellenstruktur für Tabelle `uni1_reward`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_reward` (
-`rewardId` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_reward` (
+  `rewardId` int(11) UNSIGNED NOT NULL,
   `rewardCode` varchar(255) NOT NULL,
-  `rewardMetal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `rewardCrystal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `rewardDeuterium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `rewardDarkmatter` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `rewardAntimatter` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `rewardCount` int(11) NOT NULL DEFAULT '0',
-  `rewardUserLimit` int(11) NOT NULL DEFAULT '0',
-  `universe` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `rewardMetal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardCrystal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardDeuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardDarkmatter` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardAntimatter` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardCount` int(11) NOT NULL DEFAULT 0,
+  `rewardUserLimit` int(11) NOT NULL DEFAULT 0,
+  `universe` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_reward_log`
+-- Tabellenstruktur für Tabelle `uni1_reward_log`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_reward_log` (
-  `rewardIdLog` int(11) unsigned NOT NULL DEFAULT '0',
-  `rewardUserId` int(11) unsigned NOT NULL DEFAULT '0',
-  `rewardTime` int(11) unsigned NOT NULL DEFAULT '0',
-  `universe` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_reward_log` (
+  `rewardIdLog` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardUserId` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `rewardTime` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `universe` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_session`
+-- Tabellenstruktur für Tabelle `uni1_session`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_session` (
+CREATE TABLE `uni1_session` (
   `sessionID` varchar(32) NOT NULL,
-  `userID` int(10) unsigned NOT NULL,
+  `userID` int(10) UNSIGNED NOT NULL,
   `userIP` varchar(40) NOT NULL,
   `lastonline` int(11) NOT NULL
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_session`
+-- Daten für Tabelle `uni1_session`
 --
 
 INSERT INTO `uni1_session` (`sessionID`, `userID`, `userIP`, `lastonline`) VALUES
@@ -1315,26 +1373,26 @@ INSERT INTO `uni1_session` (`sessionID`, `userID`, `userIP`, `lastonline`) VALUE
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_shortcuts`
+-- Tabellenstruktur für Tabelle `uni1_shortcuts`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_shortcuts` (
-`shortcutID` int(10) unsigned NOT NULL,
-  `ownerID` int(10) unsigned NOT NULL,
+CREATE TABLE `uni1_shortcuts` (
+  `shortcutID` int(10) UNSIGNED NOT NULL,
+  `ownerID` int(10) UNSIGNED NOT NULL,
   `name` varchar(32) NOT NULL,
-  `galaxy` tinyint(3) unsigned NOT NULL,
-  `system` smallint(5) unsigned NOT NULL,
-  `planet` tinyint(3) unsigned NOT NULL,
-  `type` tinyint(1) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `galaxy` tinyint(3) UNSIGNED NOT NULL,
+  `system` smallint(5) UNSIGNED NOT NULL,
+  `planet` tinyint(3) UNSIGNED NOT NULL,
+  `type` tinyint(1) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_stathistory`
+-- Tabellenstruktur für Tabelle `uni1_stathistory`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_stathistory` (
+CREATE TABLE `uni1_stathistory` (
   `id_owner` int(11) NOT NULL,
   `time` int(11) NOT NULL,
   `universe` tinyint(4) NOT NULL,
@@ -1344,11 +1402,11 @@ CREATE TABLE IF NOT EXISTS `uni1_stathistory` (
   `history_defs_points` double(50,0) NOT NULL,
   `history_popu_points` double(50,0) NOT NULL,
   `history_total_points` double(50,0) NOT NULL,
-  `history_total_rank` double(50,0) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `history_total_rank` double(50,0) NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Extraindo dados da tabela `uni1_stathistory`
+-- Daten für Tabelle `uni1_stathistory`
 --
 
 INSERT INTO `uni1_stathistory` (`id_owner`, `time`, `universe`, `history_build_points`, `history_tech_points`, `history_fleet_points`, `history_defs_points`, `history_popu_points`, `history_total_points`, `history_total_rank`) VALUES
@@ -1357,42 +1415,42 @@ INSERT INTO `uni1_stathistory` (`id_owner`, `time`, `universe`, `history_build_p
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_statpoints`
+-- Tabellenstruktur für Tabelle `uni1_statpoints`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_statpoints` (
-  `id_owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `id_ally` int(11) unsigned NOT NULL DEFAULT '0',
-  `stat_type` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `universe` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `tech_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `tech_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `tech_points` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `tech_count` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `build_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `build_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `build_points` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `build_count` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `defs_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `defs_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `defs_points` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `defs_count` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `popu_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `popu_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `popu_points` int(11) unsigned NOT NULL DEFAULT '0',
-  `popu_count` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_points` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `fleet_count` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `total_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `total_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
-  `total_points` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `total_count` bigint(20) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `uni1_statpoints` (
+  `id_owner` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `id_ally` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `stat_type` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `universe` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `tech_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `tech_old_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `tech_points` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `tech_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `build_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `build_old_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `build_points` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `build_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `defs_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `defs_old_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `defs_points` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `defs_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `popu_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `popu_old_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `popu_points` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `popu_count` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_old_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_points` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `total_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `total_old_rank` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `total_points` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `total_count` bigint(20) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_statpoints`
+-- Daten für Tabelle `uni1_statpoints`
 --
 
 INSERT INTO `uni1_statpoints` (`id_owner`, `id_ally`, `stat_type`, `universe`, `tech_rank`, `tech_old_rank`, `tech_points`, `tech_count`, `build_rank`, `build_old_rank`, `build_points`, `build_count`, `defs_rank`, `defs_old_rank`, `defs_points`, `defs_count`, `popu_rank`, `popu_old_rank`, `popu_points`, `popu_count`, `fleet_rank`, `fleet_old_rank`, `fleet_points`, `fleet_count`, `total_rank`, `total_old_rank`, `total_points`, `total_count`) VALUES
@@ -1401,48 +1459,48 @@ INSERT INTO `uni1_statpoints` (`id_owner`, `id_ally`, `stat_type`, `universe`, `
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_ticket`
+-- Tabellenstruktur für Tabelle `uni1_ticket`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_ticket` (
-`ticketID` int(10) unsigned NOT NULL,
-  `universe` tinyint(3) unsigned NOT NULL,
-  `ownerID` int(10) unsigned NOT NULL,
-  `categoryID` tinyint(1) unsigned NOT NULL,
+CREATE TABLE `uni1_ticket` (
+  `ticketID` int(10) UNSIGNED NOT NULL,
+  `universe` tinyint(3) UNSIGNED NOT NULL,
+  `ownerID` int(10) UNSIGNED NOT NULL,
+  `categoryID` tinyint(1) UNSIGNED NOT NULL,
   `subject` varchar(255) NOT NULL,
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `time` int(10) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `status` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `time` int(10) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_ticket_answer`
+-- Tabellenstruktur für Tabelle `uni1_ticket_answer`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_ticket_answer` (
-`answerID` int(10) unsigned NOT NULL,
-  `ownerID` int(10) unsigned NOT NULL,
+CREATE TABLE `uni1_ticket_answer` (
+  `answerID` int(10) UNSIGNED NOT NULL,
+  `ownerID` int(10) UNSIGNED NOT NULL,
   `ownerName` varchar(32) NOT NULL,
-  `ticketID` int(10) unsigned NOT NULL,
-  `time` int(10) unsigned NOT NULL,
+  `ticketID` int(10) UNSIGNED NOT NULL,
+  `time` int(10) UNSIGNED NOT NULL,
   `subject` varchar(255) NOT NULL,
   `message` mediumtext NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_ticket_category`
+-- Tabellenstruktur für Tabelle `uni1_ticket_category`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_ticket_category` (
-`categoryID` int(11) NOT NULL,
+CREATE TABLE `uni1_ticket_category` (
+  `categoryID` int(11) NOT NULL,
   `name` varchar(32) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_ticket_category`
+-- Daten für Tabelle `uni1_ticket_category`
 --
 
 INSERT INTO `uni1_ticket_category` (`categoryID`, `name`) VALUES
@@ -1451,242 +1509,245 @@ INSERT INTO `uni1_ticket_category` (`categoryID`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_topkb`
+-- Tabellenstruktur für Tabelle `uni1_topkb`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_topkb` (
+CREATE TABLE `uni1_topkb` (
   `rid` varchar(32) NOT NULL,
-  `units` double(50,0) unsigned NOT NULL,
+  `units` double(50,0) UNSIGNED NOT NULL,
   `result` varchar(1) NOT NULL,
   `time` int(11) NOT NULL,
-  `universe` tinyint(3) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `universe` tinyint(3) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_transport_player`
+-- Tabellenstruktur für Tabelle `uni1_transport_player`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_transport_player` (
-`transportID` int(11) NOT NULL,
-  `senderID` int(11) unsigned NOT NULL DEFAULT '0',
-  `receiverID` int(11) unsigned NOT NULL DEFAULT '0',
-  `time` int(11) unsigned NOT NULL DEFAULT '0',
-  `strongest` int(11) unsigned NOT NULL DEFAULT '0',
-  `push` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `resource_metal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `resource_crystal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `resource_deuterium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `resource_elyrium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population301` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population302` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population303` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population304` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population305` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population306` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `population307` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `legal` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `delete` int(11) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE `uni1_transport_player` (
+  `transportID` int(11) NOT NULL,
+  `senderID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `receiverID` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `strongest` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `push` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `resource_metal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `resource_crystal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `resource_deuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `resource_elyrium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population301` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population302` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population303` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population304` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population305` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population306` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `population307` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `legal` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `delete` int(11) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_users`
+-- Tabellenstruktur für Tabelle `uni1_users`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_users` (
-`id` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_users` (
+  `id` int(11) UNSIGNED NOT NULL,
   `username` varchar(32) NOT NULL DEFAULT '',
   `password` varchar(60) NOT NULL DEFAULT '',
   `email` varchar(64) NOT NULL DEFAULT '',
   `email_2` varchar(64) NOT NULL DEFAULT '',
   `avatar` varchar(255) NOT NULL DEFAULT 'avatar_defaut.jpg',
   `lang` varchar(2) NOT NULL DEFAULT 'de',
-  `authattack` tinyint(1) NOT NULL DEFAULT '0',
-  `authlevel` tinyint(1) NOT NULL DEFAULT '0',
-  `rights` text,
-  `id_planet` int(11) unsigned NOT NULL DEFAULT '0',
-  `universe` tinyint(3) unsigned NOT NULL,
-  `galaxy` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `system` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `planet` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `darkmatter` double(50,0) NOT NULL DEFAULT '0',
+  `authattack` tinyint(1) NOT NULL DEFAULT 0,
+  `authlevel` tinyint(1) NOT NULL DEFAULT 0,
+  `is_ai` tinyint(1) NOT NULL DEFAULT 0,
+  `ai_difficulty` tinyint(4) NOT NULL DEFAULT 1,
+  `ai_personality` varchar(50) NOT NULL DEFAULT 'balanced',
+  `rights` text DEFAULT NULL,
+  `id_planet` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `universe` tinyint(3) UNSIGNED NOT NULL,
+  `galaxy` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `system` smallint(5) UNSIGNED NOT NULL DEFAULT 0,
+  `planet` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `darkmatter` double(50,0) NOT NULL DEFAULT 0,
   `user_lastip` varchar(40) NOT NULL DEFAULT '',
   `ip_at_reg` varchar(40) NOT NULL DEFAULT '',
-  `register_time` int(11) NOT NULL DEFAULT '0',
-  `onlinetime` int(11) NOT NULL DEFAULT '0',
+  `register_time` int(11) NOT NULL DEFAULT 0,
+  `onlinetime` int(11) NOT NULL DEFAULT 0,
   `dpath` varchar(20) NOT NULL DEFAULT 'gow',
   `timezone` varchar(32) NOT NULL DEFAULT 'Europe/London',
-  `planet_sort` tinyint(1) NOT NULL DEFAULT '0',
-  `planet_sort_order` tinyint(1) NOT NULL DEFAULT '0',
-  `spio_anz` int(10) unsigned NOT NULL DEFAULT '1',
-  `settings_fleetactions` tinyint(2) unsigned NOT NULL DEFAULT '3',
-  `settings_esp` tinyint(1) NOT NULL DEFAULT '1',
-  `settings_wri` tinyint(1) NOT NULL DEFAULT '1',
-  `settings_bud` tinyint(1) NOT NULL DEFAULT '1',
-  `settings_mis` tinyint(1) NOT NULL DEFAULT '1',
-  `settings_blockPM` tinyint(1) NOT NULL DEFAULT '0',
-  `urlaubs_modus` tinyint(1) NOT NULL DEFAULT '0',
-  `urlaubs_until` int(11) NOT NULL DEFAULT '0',
-  `db_deaktjava` int(11) NOT NULL DEFAULT '0',
-  `b_tech_planet` int(11) unsigned NOT NULL DEFAULT '0',
-  `b_tech` int(11) unsigned NOT NULL DEFAULT '0',
-  `b_tech_id` smallint(2) unsigned NOT NULL DEFAULT '0',
-  `b_tech_queue` text,
-  `spy_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `computer_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `military_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `defence_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `shield_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `energy_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `hyperspace_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `combustion_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `impulse_motor_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `hyperspace_motor_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `laser_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ionic_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `buster_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `intergalactic_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `expedition_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `metal_proc_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `crystal_proc_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `deuterium_proc_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `graviton_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `extraction_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `subspace_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `particle_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `antaris_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `infrastructure_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `virus_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `forcefield_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `occultation_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `sensors_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `control_room_tech` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `ally_id` int(11) unsigned NOT NULL DEFAULT '0',
-  `ally_register_time` int(11) NOT NULL DEFAULT '0',
-  `ally_rank_id` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `next_ally_register` int(11) unsigned NOT NULL DEFAULT '0',
-  `rpg_geologue` tinyint(2) unsigned NOT NULL DEFAULT '0',
-  `rpg_amiral` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_ingenieur` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_technocrate` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_espion` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_constructeur` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_scientifique` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_commandant` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_stockeur` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_defenseur` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_destructeur` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_general` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_bunker` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_raideur` tinyint(2) NOT NULL DEFAULT '0',
-  `rpg_empereur` tinyint(22) NOT NULL DEFAULT '0',
-  `bana` tinyint(1) NOT NULL DEFAULT '0',
-  `banaday` int(11) NOT NULL DEFAULT '0',
-  `hof` tinyint(4) NOT NULL DEFAULT '0',
-  `spyMessagesMode` tinyint(1) NOT NULL DEFAULT '0',
-  `wons` int(11) unsigned NOT NULL DEFAULT '0',
-  `loos` int(11) unsigned NOT NULL DEFAULT '0',
-  `draws` int(11) unsigned NOT NULL DEFAULT '0',
-  `kbmetal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `kbcrystal` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `kbdeuterium` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `lostunits` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `desunits` double(50,0) unsigned NOT NULL DEFAULT '0',
-  `uctime` int(11) NOT NULL DEFAULT '0',
-  `setmail` int(11) NOT NULL DEFAULT '0',
-  `dm_attack` int(11) NOT NULL DEFAULT '0',
-  `dm_defensive` int(11) NOT NULL DEFAULT '0',
-  `dm_buildtime` int(11) NOT NULL DEFAULT '0',
-  `dm_researchtime` int(11) NOT NULL DEFAULT '0',
-  `dm_resource` int(11) NOT NULL DEFAULT '0',
-  `dm_energie` int(11) NOT NULL DEFAULT '0',
-  `dm_fleettime` int(11) NOT NULL DEFAULT '0',
-  `ref_id` int(11) NOT NULL DEFAULT '0',
-  `ref_bonus` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `inactive_mail` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `intro` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `user_deleted` int(11) unsigned NOT NULL DEFAULT '0',
-  `multi_spotted` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `mode_chaine` int(11) unsigned NOT NULL DEFAULT '0',
-  `mode_rapide` int(11) unsigned NOT NULL DEFAULT '0',
+  `planet_sort` tinyint(1) NOT NULL DEFAULT 0,
+  `planet_sort_order` tinyint(1) NOT NULL DEFAULT 0,
+  `spio_anz` int(10) UNSIGNED NOT NULL DEFAULT 1,
+  `settings_fleetactions` tinyint(2) UNSIGNED NOT NULL DEFAULT 3,
+  `settings_esp` tinyint(1) NOT NULL DEFAULT 1,
+  `settings_wri` tinyint(1) NOT NULL DEFAULT 1,
+  `settings_bud` tinyint(1) NOT NULL DEFAULT 1,
+  `settings_mis` tinyint(1) NOT NULL DEFAULT 1,
+  `settings_blockPM` tinyint(1) NOT NULL DEFAULT 0,
+  `urlaubs_modus` tinyint(1) NOT NULL DEFAULT 0,
+  `urlaubs_until` int(11) NOT NULL DEFAULT 0,
+  `db_deaktjava` int(11) NOT NULL DEFAULT 0,
+  `b_tech_planet` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `b_tech` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `b_tech_id` smallint(2) UNSIGNED NOT NULL DEFAULT 0,
+  `b_tech_queue` text DEFAULT NULL,
+  `spy_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `computer_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `military_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `defence_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `shield_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `energy_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `hyperspace_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `combustion_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `impulse_motor_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `hyperspace_motor_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `laser_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `ionic_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `buster_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `intergalactic_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `expedition_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `metal_proc_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `crystal_proc_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `deuterium_proc_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `graviton_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `extraction_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `subspace_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `particle_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `antaris_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `infrastructure_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `virus_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `forcefield_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `occultation_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `sensors_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `control_room_tech` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_id` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `ally_register_time` int(11) NOT NULL DEFAULT 0,
+  `ally_rank_id` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `next_ally_register` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `rpg_geologue` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
+  `rpg_amiral` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_ingenieur` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_technocrate` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_espion` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_constructeur` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_scientifique` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_commandant` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_stockeur` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_defenseur` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_destructeur` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_general` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_bunker` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_raideur` tinyint(2) NOT NULL DEFAULT 0,
+  `rpg_empereur` tinyint(22) NOT NULL DEFAULT 0,
+  `bana` tinyint(1) NOT NULL DEFAULT 0,
+  `banaday` int(11) NOT NULL DEFAULT 0,
+  `hof` tinyint(4) NOT NULL DEFAULT 0,
+  `spyMessagesMode` tinyint(1) NOT NULL DEFAULT 0,
+  `wons` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `loos` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `draws` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `kbmetal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `kbcrystal` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `kbdeuterium` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `lostunits` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `desunits` double(50,0) UNSIGNED NOT NULL DEFAULT 0,
+  `uctime` int(11) NOT NULL DEFAULT 0,
+  `setmail` int(11) NOT NULL DEFAULT 0,
+  `dm_attack` int(11) NOT NULL DEFAULT 0,
+  `dm_defensive` int(11) NOT NULL DEFAULT 0,
+  `dm_buildtime` int(11) NOT NULL DEFAULT 0,
+  `dm_researchtime` int(11) NOT NULL DEFAULT 0,
+  `dm_resource` int(11) NOT NULL DEFAULT 0,
+  `dm_energie` int(11) NOT NULL DEFAULT 0,
+  `dm_fleettime` int(11) NOT NULL DEFAULT 0,
+  `ref_id` int(11) NOT NULL DEFAULT 0,
+  `ref_bonus` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `inactive_mail` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
+  `intro` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `user_deleted` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `multi_spotted` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `mode_chaine` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `mode_rapide` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `date_of_birth` int(11) DEFAULT NULL,
-  `year` int(11) NOT NULL DEFAULT '2015',
+  `year` int(11) NOT NULL DEFAULT 2015,
   `sexe` varchar(5) DEFAULT NULL,
-  `planet_cloak` int(11) unsigned NOT NULL DEFAULT '0',
-  `planet_cloak_countdown` int(11) unsigned NOT NULL DEFAULT '0',
-  `immunity_until` int(11) unsigned NOT NULL DEFAULT '0',
-  `next_immunity` int(11) unsigned NOT NULL DEFAULT '0',
-  `hln_post` int(11) unsigned NOT NULL DEFAULT '0',
-  `achievement_todo` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `ragnar_item` int(11) unsigned NOT NULL DEFAULT '0',
-  `khufu_item` int(11) unsigned NOT NULL DEFAULT '0',
-  `amplificateur_item` int(11) unsigned NOT NULL DEFAULT '0',
-  `malvar_item` int(11) unsigned NOT NULL DEFAULT '0',
-  `fleet_manage` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `max_explore` int(11) unsigned NOT NULL DEFAULT '0',
-  `chat_visit` int(11) unsigned NOT NULL DEFAULT '0',
-  `message_ban` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `message_ban_time` int(11) unsigned NOT NULL DEFAULT '0',
-  `vote_count` int(11) unsigned NOT NULL DEFAULT '0',
-  `v1` int(11) unsigned NOT NULL DEFAULT '0',
+  `planet_cloak` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `planet_cloak_countdown` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `immunity_until` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `next_immunity` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `hln_post` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `achievement_todo` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
+  `ragnar_item` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `khufu_item` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `amplificateur_item` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `malvar_item` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `fleet_manage` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `max_explore` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `chat_visit` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `message_ban` tinyint(3) UNSIGNED NOT NULL DEFAULT 0,
+  `message_ban_time` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `vote_count` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `v1` int(11) UNSIGNED NOT NULL DEFAULT 0,
   `custom_color` varchar(55) DEFAULT NULL,
-  `galaxy_space` tinyint(3) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM AUTO_INCREMENT=10047 DEFAULT CHARSET=utf8;
+  `galaxy_space` tinyint(3) UNSIGNED NOT NULL DEFAULT 0
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_users`
+-- Daten für Tabelle `uni1_users`
 --
 
-INSERT INTO `uni1_users` (`id`, `username`, `password`, `email`, `email_2`, `avatar`, `lang`, `authattack`, `authlevel`, `rights`, `id_planet`, `universe`, `galaxy`, `system`, `planet`, `darkmatter`, `user_lastip`, `ip_at_reg`, `register_time`, `onlinetime`, `dpath`, `timezone`, `planet_sort`, `planet_sort_order`, `spio_anz`, `settings_fleetactions`, `settings_esp`, `settings_wri`, `settings_bud`, `settings_mis`, `settings_blockPM`, `urlaubs_modus`, `urlaubs_until`, `db_deaktjava`, `b_tech_planet`, `b_tech`, `b_tech_id`, `b_tech_queue`, `spy_tech`, `computer_tech`, `military_tech`, `defence_tech`, `shield_tech`, `energy_tech`, `hyperspace_tech`, `combustion_tech`, `impulse_motor_tech`, `hyperspace_motor_tech`, `laser_tech`, `ionic_tech`, `buster_tech`, `intergalactic_tech`, `expedition_tech`, `metal_proc_tech`, `crystal_proc_tech`, `deuterium_proc_tech`, `graviton_tech`, `extraction_tech`, `subspace_tech`, `particle_tech`, `antaris_tech`, `infrastructure_tech`, `virus_tech`, `forcefield_tech`, `occultation_tech`, `sensors_tech`, `control_room_tech`, `ally_id`, `ally_register_time`, `ally_rank_id`, `next_ally_register`, `rpg_geologue`, `rpg_amiral`, `rpg_ingenieur`, `rpg_technocrate`, `rpg_espion`, `rpg_constructeur`, `rpg_scientifique`, `rpg_commandant`, `rpg_stockeur`, `rpg_defenseur`, `rpg_destructeur`, `rpg_general`, `rpg_bunker`, `rpg_raideur`, `rpg_empereur`, `bana`, `banaday`, `hof`, `spyMessagesMode`, `wons`, `loos`, `draws`, `kbmetal`, `kbcrystal`, `kbdeuterium`, `lostunits`, `desunits`, `uctime`, `setmail`, `dm_attack`, `dm_defensive`, `dm_buildtime`, `dm_researchtime`, `dm_resource`, `dm_energie`, `dm_fleettime`, `ref_id`, `ref_bonus`, `inactive_mail`, `intro`, `user_deleted`, `multi_spotted`, `mode_chaine`, `mode_rapide`, `date_of_birth`, `year`, `sexe`, `planet_cloak`, `planet_cloak_countdown`, `immunity_until`, `next_immunity`, `hln_post`, `achievement_todo`, `ragnar_item`, `khufu_item`, `amplificateur_item`, `malvar_item`, `fleet_manage`, `max_explore`, `chat_visit`, `message_ban`, `message_ban_time`, `vote_count`, `v1`, `custom_color`, `galaxy_space`) VALUES
-(1, 'Admin', '$2a$09$MhPS.okDO52xiw/7rX0s9upqkXH8w7P9nxqDiUTx2.0C9inMnLWIS', '', '', 'avatar_defaut.jpg', 'en', 3, 3, NULL, 1, 1, 1, 92, 2, 5, '::1', '178.209.52.103', 1429443275, 1430522816, 'gow', 'Europe/Brussels', 0, 0, 1, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, NULL, 2015, NULL, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1429443295, 0, 0, 0, 0, NULL, 0);
+INSERT INTO `uni1_users` (`id`, `username`, `password`, `email`, `email_2`, `avatar`, `lang`, `authattack`, `authlevel`, `is_ai`, `ai_difficulty`, `ai_personality`, `rights`, `id_planet`, `universe`, `galaxy`, `system`, `planet`, `darkmatter`, `user_lastip`, `ip_at_reg`, `register_time`, `onlinetime`, `dpath`, `timezone`, `planet_sort`, `planet_sort_order`, `spio_anz`, `settings_fleetactions`, `settings_esp`, `settings_wri`, `settings_bud`, `settings_mis`, `settings_blockPM`, `urlaubs_modus`, `urlaubs_until`, `db_deaktjava`, `b_tech_planet`, `b_tech`, `b_tech_id`, `b_tech_queue`, `spy_tech`, `computer_tech`, `military_tech`, `defence_tech`, `shield_tech`, `energy_tech`, `hyperspace_tech`, `combustion_tech`, `impulse_motor_tech`, `hyperspace_motor_tech`, `laser_tech`, `ionic_tech`, `buster_tech`, `intergalactic_tech`, `expedition_tech`, `metal_proc_tech`, `crystal_proc_tech`, `deuterium_proc_tech`, `graviton_tech`, `extraction_tech`, `subspace_tech`, `particle_tech`, `antaris_tech`, `infrastructure_tech`, `virus_tech`, `forcefield_tech`, `occultation_tech`, `sensors_tech`, `control_room_tech`, `ally_id`, `ally_register_time`, `ally_rank_id`, `next_ally_register`, `rpg_geologue`, `rpg_amiral`, `rpg_ingenieur`, `rpg_technocrate`, `rpg_espion`, `rpg_constructeur`, `rpg_scientifique`, `rpg_commandant`, `rpg_stockeur`, `rpg_defenseur`, `rpg_destructeur`, `rpg_general`, `rpg_bunker`, `rpg_raideur`, `rpg_empereur`, `bana`, `banaday`, `hof`, `spyMessagesMode`, `wons`, `loos`, `draws`, `kbmetal`, `kbcrystal`, `kbdeuterium`, `lostunits`, `desunits`, `uctime`, `setmail`, `dm_attack`, `dm_defensive`, `dm_buildtime`, `dm_researchtime`, `dm_resource`, `dm_energie`, `dm_fleettime`, `ref_id`, `ref_bonus`, `inactive_mail`, `intro`, `user_deleted`, `multi_spotted`, `mode_chaine`, `mode_rapide`, `date_of_birth`, `year`, `sexe`, `planet_cloak`, `planet_cloak_countdown`, `immunity_until`, `next_immunity`, `hln_post`, `achievement_todo`, `ragnar_item`, `khufu_item`, `amplificateur_item`, `malvar_item`, `fleet_manage`, `max_explore`, `chat_visit`, `message_ban`, `message_ban_time`, `vote_count`, `v1`, `custom_color`, `galaxy_space`) VALUES
+(1, 'Admin', '$2a$09$MhPS.okDO52xiw/7rX0s9upqkXH8w7P9nxqDiUTx2.0C9inMnLWIS', '', '', 'avatar_defaut.jpg', 'en', 3, 3, 0, 1, 'balanced', NULL, 1, 1, 1, 92, 2, 5, '::1', '178.209.52.103', 1429443275, 1430522816, 'gow', 'Europe/Brussels', 0, 0, 1, 3, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, '', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, NULL, 2015, NULL, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1429443295, 0, 0, 0, 0, NULL, 0);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_users_to_acs`
+-- Tabellenstruktur für Tabelle `uni1_users_to_acs`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_users_to_acs` (
-  `userID` int(10) unsigned NOT NULL,
-  `acsID` int(10) unsigned NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE `uni1_users_to_acs` (
+  `userID` int(10) UNSIGNED NOT NULL,
+  `acsID` int(10) UNSIGNED NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_users_to_extauth`
+-- Tabellenstruktur für Tabelle `uni1_users_to_extauth`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_users_to_extauth` (
+CREATE TABLE `uni1_users_to_extauth` (
   `id` int(11) NOT NULL,
   `account` varchar(64) NOT NULL,
   `mode` varchar(32) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_users_to_topkb`
+-- Tabellenstruktur für Tabelle `uni1_users_to_topkb`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_users_to_topkb` (
+CREATE TABLE `uni1_users_to_topkb` (
   `rid` varchar(32) NOT NULL,
   `uid` int(11) NOT NULL,
   `username` varchar(128) NOT NULL,
   `role` tinyint(1) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_users_valid`
+-- Tabellenstruktur für Tabelle `uni1_users_valid`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_users_valid` (
-`validationID` int(11) unsigned NOT NULL,
+CREATE TABLE `uni1_users_valid` (
+  `validationID` int(11) UNSIGNED NOT NULL,
   `userName` varchar(64) NOT NULL,
   `validationKey` varchar(32) NOT NULL,
   `password` varchar(60) NOT NULL,
@@ -1695,82 +1756,82 @@ CREATE TABLE IF NOT EXISTS `uni1_users_valid` (
   `date` int(11) NOT NULL,
   `ip` varchar(40) NOT NULL,
   `language` varchar(3) NOT NULL,
-  `universe` tinyint(3) unsigned NOT NULL,
+  `universe` tinyint(3) UNSIGNED NOT NULL,
   `referralID` int(11) DEFAULT NULL,
   `externalAuthUID` varchar(128) DEFAULT NULL,
   `externalAuthMethod` varchar(32) DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=151 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_vars`
+-- Tabellenstruktur für Tabelle `uni1_vars`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_vars` (
-  `elementID` smallint(5) unsigned NOT NULL,
+CREATE TABLE `uni1_vars` (
+  `elementID` smallint(5) UNSIGNED NOT NULL,
   `name` varchar(32) NOT NULL,
   `class` int(11) NOT NULL,
   `onPlanetType` set('1','3') NOT NULL,
   `onePerPlanet` tinyint(4) NOT NULL,
   `factor` float(4,2) NOT NULL,
   `maxLevel` int(11) DEFAULT NULL,
-  `cost901` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cost902` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cost903` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cost904` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cost905` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cost911` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `cost921` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `consumption1` int(11) unsigned DEFAULT NULL,
-  `consumption2` int(11) unsigned DEFAULT NULL,
-  `speedTech` int(11) unsigned DEFAULT NULL,
-  `speed1` int(11) unsigned DEFAULT NULL,
-  `speed2` int(11) unsigned DEFAULT NULL,
-  `speed2Tech` int(10) unsigned DEFAULT NULL,
-  `speed2onLevel` int(10) unsigned DEFAULT NULL,
-  `speed3Tech` int(10) unsigned DEFAULT NULL,
-  `speed3onLevel` int(10) unsigned DEFAULT NULL,
-  `capacity` int(11) unsigned DEFAULT NULL,
-  `attack` int(10) unsigned DEFAULT NULL,
-  `defend` int(10) unsigned DEFAULT NULL,
-  `timeBonus` int(11) unsigned DEFAULT NULL,
-  `bonusAttack` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusDefensive` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusShield` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusBuildTime` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusResearchTime` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusShipTime` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusDefensiveTime` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusResource` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusEnergy` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusResourceStorage` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusShipStorage` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusFlyTime` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusFleetSlots` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusPlanets` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusSpyPower` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusExpedition` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusGateCoolTime` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusMoreFound` float(4,2) NOT NULL DEFAULT '0.00',
-  `bonusAttackUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusDefensiveUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusShieldUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusBuildTimeUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusResearchTimeUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusShipTimeUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusDefensiveTimeUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusResourceUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusEnergyUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusResourceStorageUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusShipStorageUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusFlyTimeUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusFleetSlotsUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusPlanetsUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusSpyPowerUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusExpeditionUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusGateCoolTimeUnit` smallint(1) NOT NULL DEFAULT '0',
-  `bonusMoreFoundUnit` smallint(1) NOT NULL DEFAULT '0',
+  `cost901` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `cost902` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `cost903` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `cost904` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `cost905` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `cost911` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `cost921` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `consumption1` int(11) UNSIGNED DEFAULT NULL,
+  `consumption2` int(11) UNSIGNED DEFAULT NULL,
+  `speedTech` int(11) UNSIGNED DEFAULT NULL,
+  `speed1` int(11) UNSIGNED DEFAULT NULL,
+  `speed2` int(11) UNSIGNED DEFAULT NULL,
+  `speed2Tech` int(10) UNSIGNED DEFAULT NULL,
+  `speed2onLevel` int(10) UNSIGNED DEFAULT NULL,
+  `speed3Tech` int(10) UNSIGNED DEFAULT NULL,
+  `speed3onLevel` int(10) UNSIGNED DEFAULT NULL,
+  `capacity` int(11) UNSIGNED DEFAULT NULL,
+  `attack` int(10) UNSIGNED DEFAULT NULL,
+  `defend` int(10) UNSIGNED DEFAULT NULL,
+  `timeBonus` int(11) UNSIGNED DEFAULT NULL,
+  `bonusAttack` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusDefensive` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusShield` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusBuildTime` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusResearchTime` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusShipTime` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusDefensiveTime` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusResource` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusEnergy` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusResourceStorage` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusShipStorage` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusFlyTime` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusFleetSlots` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusPlanets` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusSpyPower` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusExpedition` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusGateCoolTime` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusMoreFound` float(4,2) NOT NULL DEFAULT 0.00,
+  `bonusAttackUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusDefensiveUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusShieldUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusBuildTimeUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusResearchTimeUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusShipTimeUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusDefensiveTimeUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusResourceUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusEnergyUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusResourceStorageUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusShipStorageUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusFlyTimeUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusFleetSlotsUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusPlanetsUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusSpyPowerUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusExpeditionUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusGateCoolTimeUnit` smallint(1) NOT NULL DEFAULT 0,
+  `bonusMoreFoundUnit` smallint(1) NOT NULL DEFAULT 0,
   `speedFleetFactor` float(4,2) DEFAULT NULL,
   `production901` varchar(255) DEFAULT NULL,
   `production902` varchar(255) DEFAULT NULL,
@@ -1783,10 +1844,10 @@ CREATE TABLE IF NOT EXISTS `uni1_vars` (
   `storage902` varchar(255) DEFAULT NULL,
   `storage903` varchar(255) DEFAULT NULL,
   `storage904` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_vars`
+-- Daten für Tabelle `uni1_vars`
 --
 
 INSERT INTO `uni1_vars` (`elementID`, `name`, `class`, `onPlanetType`, `onePerPlanet`, `factor`, `maxLevel`, `cost901`, `cost902`, `cost903`, `cost904`, `cost905`, `cost911`, `cost921`, `consumption1`, `consumption2`, `speedTech`, `speed1`, `speed2`, `speed2Tech`, `speed2onLevel`, `speed3Tech`, `speed3onLevel`, `capacity`, `attack`, `defend`, `timeBonus`, `bonusAttack`, `bonusDefensive`, `bonusShield`, `bonusBuildTime`, `bonusResearchTime`, `bonusShipTime`, `bonusDefensiveTime`, `bonusResource`, `bonusEnergy`, `bonusResourceStorage`, `bonusShipStorage`, `bonusFlyTime`, `bonusFleetSlots`, `bonusPlanets`, `bonusSpyPower`, `bonusExpedition`, `bonusGateCoolTime`, `bonusMoreFound`, `bonusAttackUnit`, `bonusDefensiveUnit`, `bonusShieldUnit`, `bonusBuildTimeUnit`, `bonusResearchTimeUnit`, `bonusShipTimeUnit`, `bonusDefensiveTimeUnit`, `bonusResourceUnit`, `bonusEnergyUnit`, `bonusResourceStorageUnit`, `bonusShipStorageUnit`, `bonusFlyTimeUnit`, `bonusFleetSlotsUnit`, `bonusPlanetsUnit`, `bonusSpyPowerUnit`, `bonusExpeditionUnit`, `bonusGateCoolTimeUnit`, `bonusMoreFoundUnit`, `speedFleetFactor`, `production901`, `production902`, `production903`, `production904`, `production905`, `production911`, `production921`, `storage901`, `storage902`, `storage903`, `storage904`) VALUES
@@ -1924,17 +1985,17 @@ INSERT INTO `uni1_vars` (`elementID`, `name`, `class`, `onPlanetType`, `onePerPl
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_vars_rapidfire`
+-- Tabellenstruktur für Tabelle `uni1_vars_rapidfire`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_vars_rapidfire` (
+CREATE TABLE `uni1_vars_rapidfire` (
   `elementID` int(11) NOT NULL,
   `rapidfireID` int(11) NOT NULL,
   `shoots` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_vars_rapidfire`
+-- Daten für Tabelle `uni1_vars_rapidfire`
 --
 
 INSERT INTO `uni1_vars_rapidfire` (`elementID`, `rapidfireID`, `shoots`) VALUES
@@ -2039,17 +2100,17 @@ INSERT INTO `uni1_vars_rapidfire` (`elementID`, `rapidfireID`, `shoots`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura da tabela `uni1_vars_requriements`
+-- Tabellenstruktur für Tabelle `uni1_vars_requriements`
 --
 
-CREATE TABLE IF NOT EXISTS `uni1_vars_requriements` (
+CREATE TABLE `uni1_vars_requriements` (
   `elementID` int(11) NOT NULL,
   `requireID` int(11) NOT NULL,
   `requireLevel` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
--- Extraindo dados da tabela `uni1_vars_requriements`
+-- Daten für Tabelle `uni1_vars_requriements`
 --
 
 INSERT INTO `uni1_vars_requriements` (`elementID`, `requireID`, `requireLevel`) VALUES
@@ -2246,499 +2307,615 @@ INSERT INTO `uni1_vars_requriements` (`elementID`, `requireID`, `requireLevel`) 
 (224, 118, 5);
 
 --
--- Indexes for dumped tables
+-- Indizes der exportierten Tabellen
 --
 
 --
--- Indexes for table `emails`
+-- Indizes für die Tabelle `emails`
 --
 ALTER TABLE `emails`
- ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `uni1_achats_log`
+-- Indizes für die Tabelle `uni1_achats_log`
 --
 ALTER TABLE `uni1_achats_log`
- ADD PRIMARY KEY (`achatID`);
+  ADD PRIMARY KEY (`achatID`);
 
 --
--- Indexes for table `uni1_aks`
+-- Indizes für die Tabelle `uni1_ai_action_log`
+--
+ALTER TABLE `uni1_ai_action_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ai_user_id` (`ai_user_id`),
+  ADD KEY `executed_at` (`executed_at`);
+
+--
+-- Indizes für die Tabelle `uni1_ai_config`
+--
+ALTER TABLE `uni1_ai_config`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `config_key` (`config_key`);
+
+--
+-- Indizes für die Tabelle `uni1_ai_state`
+--
+ALTER TABLE `uni1_ai_state`
+  ADD PRIMARY KEY (`ai_user_id`);
+
+--
+-- Indizes für die Tabelle `uni1_aks`
 --
 ALTER TABLE `uni1_aks`
- ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `uni1_alliance`
+-- Indizes für die Tabelle `uni1_alliance`
 --
 ALTER TABLE `uni1_alliance`
- ADD PRIMARY KEY (`id`), ADD KEY `ally_tag` (`ally_tag`), ADD KEY `ally_name` (`ally_name`), ADD KEY `ally_universe` (`ally_universe`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ally_tag` (`ally_tag`),
+  ADD KEY `ally_name` (`ally_name`),
+  ADD KEY `ally_universe` (`ally_universe`);
 
 --
--- Indexes for table `uni1_alliance_ranks`
+-- Indizes für die Tabelle `uni1_alliance_ranks`
 --
 ALTER TABLE `uni1_alliance_ranks`
- ADD PRIMARY KEY (`rankID`), ADD KEY `allianceID` (`allianceID`,`rankID`);
+  ADD PRIMARY KEY (`rankID`),
+  ADD KEY `allianceID` (`allianceID`,`rankID`);
 
 --
--- Indexes for table `uni1_alliance_request`
+-- Indizes für die Tabelle `uni1_alliance_request`
 --
 ALTER TABLE `uni1_alliance_request`
- ADD PRIMARY KEY (`applyID`), ADD KEY `allianceID` (`allianceID`,`userID`);
+  ADD PRIMARY KEY (`applyID`),
+  ADD KEY `allianceID` (`allianceID`,`userID`);
 
 --
--- Indexes for table `uni1_banned`
+-- Indizes für die Tabelle `uni1_banned`
 --
 ALTER TABLE `uni1_banned`
- ADD KEY `ID` (`id`), ADD KEY `universe` (`universe`);
+  ADD KEY `ID` (`id`),
+  ADD KEY `universe` (`universe`);
 
 --
--- Indexes for table `uni1_buddy`
+-- Indizes für die Tabelle `uni1_buddy`
 --
 ALTER TABLE `uni1_buddy`
- ADD PRIMARY KEY (`id`), ADD KEY `universe` (`universe`), ADD KEY `sender` (`sender`,`owner`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `universe` (`universe`),
+  ADD KEY `sender` (`sender`,`owner`);
 
 --
--- Indexes for table `uni1_buddy_request`
+-- Indizes für die Tabelle `uni1_buddy_request`
 --
 ALTER TABLE `uni1_buddy_request`
- ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `uni1_bunker_log`
+-- Indizes für die Tabelle `uni1_bunker_log`
 --
 ALTER TABLE `uni1_bunker_log`
- ADD PRIMARY KEY (`logID`);
+  ADD PRIMARY KEY (`logID`);
 
 --
--- Indexes for table `uni1_config`
+-- Indizes für die Tabelle `uni1_config`
 --
 ALTER TABLE `uni1_config`
- ADD PRIMARY KEY (`uni`);
+  ADD PRIMARY KEY (`uni`);
 
 --
--- Indexes for table `uni1_cronjobs`
+-- Indizes für die Tabelle `uni1_cronjobs`
 --
 ALTER TABLE `uni1_cronjobs`
- ADD UNIQUE KEY `cronjobID` (`cronjobID`), ADD KEY `isActive` (`isActive`,`nextTime`,`lock`,`cronjobID`);
+  ADD UNIQUE KEY `cronjobID` (`cronjobID`),
+  ADD KEY `isActive` (`isActive`,`nextTime`,`lock`,`cronjobID`);
 
 --
--- Indexes for table `uni1_diplo`
+-- Indizes für die Tabelle `uni1_diplo`
 --
 ALTER TABLE `uni1_diplo`
- ADD PRIMARY KEY (`id`), ADD KEY `universe` (`universe`), ADD KEY `owner_1` (`owner_1`,`owner_2`,`accept`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `universe` (`universe`),
+  ADD KEY `owner_1` (`owner_1`,`owner_2`,`accept`);
 
 --
--- Indexes for table `uni1_explorations`
+-- Indizes für die Tabelle `uni1_explorations`
 --
 ALTER TABLE `uni1_explorations`
- ADD PRIMARY KEY (`explorationID`);
+  ADD PRIMARY KEY (`explorationID`);
 
 --
--- Indexes for table `uni1_fleets`
+-- Indizes für die Tabelle `uni1_fleets`
 --
 ALTER TABLE `uni1_fleets`
- ADD PRIMARY KEY (`fleet_id`), ADD KEY `fleet_target_owner` (`fleet_target_owner`,`fleet_mission`), ADD KEY `fleet_owner` (`fleet_owner`,`fleet_mission`), ADD KEY `fleet_group` (`fleet_group`);
+  ADD PRIMARY KEY (`fleet_id`),
+  ADD KEY `fleet_target_owner` (`fleet_target_owner`,`fleet_mission`),
+  ADD KEY `fleet_owner` (`fleet_owner`,`fleet_mission`),
+  ADD KEY `fleet_group` (`fleet_group`);
 
 --
--- Indexes for table `uni1_fleets_manage`
+-- Indizes für die Tabelle `uni1_fleets_manage`
 --
 ALTER TABLE `uni1_fleets_manage`
- ADD PRIMARY KEY (`manageID`);
+  ADD PRIMARY KEY (`manageID`);
 
 --
--- Indexes for table `uni1_fleet_event`
+-- Indizes für die Tabelle `uni1_fleet_event`
 --
 ALTER TABLE `uni1_fleet_event`
- ADD PRIMARY KEY (`fleetID`), ADD KEY `lock` (`lock`,`time`);
+  ADD PRIMARY KEY (`fleetID`),
+  ADD KEY `lock` (`lock`,`time`);
 
 --
--- Indexes for table `uni1_ipblock`
+-- Indizes für die Tabelle `uni1_ipblock`
 --
 ALTER TABLE `uni1_ipblock`
- ADD PRIMARY KEY (`ipblockID`);
+  ADD PRIMARY KEY (`ipblockID`);
 
 --
--- Indexes for table `uni1_iplog`
+-- Indizes für die Tabelle `uni1_iplog`
 --
 ALTER TABLE `uni1_iplog`
- ADD PRIMARY KEY (`logID`);
+  ADD PRIMARY KEY (`logID`);
 
 --
--- Indexes for table `uni1_log`
+-- Indizes für die Tabelle `uni1_log`
 --
 ALTER TABLE `uni1_log`
- ADD PRIMARY KEY (`id`), ADD KEY `mode` (`mode`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `mode` (`mode`);
 
 --
--- Indexes for table `uni1_log_fleets`
+-- Indizes für die Tabelle `uni1_log_fleets`
 --
 ALTER TABLE `uni1_log_fleets`
- ADD PRIMARY KEY (`fleet_id`), ADD KEY `BashRule` (`fleet_owner`,`fleet_end_id`,`fleet_start_time`,`fleet_mission`,`fleet_state`);
+  ADD PRIMARY KEY (`fleet_id`),
+  ADD KEY `BashRule` (`fleet_owner`,`fleet_end_id`,`fleet_start_time`,`fleet_mission`,`fleet_state`);
 
 --
--- Indexes for table `uni1_lostpassword`
+-- Indizes für die Tabelle `uni1_lostpassword`
 --
 ALTER TABLE `uni1_lostpassword`
- ADD PRIMARY KEY (`key`), ADD UNIQUE KEY `userID` (`userID`,`key`,`time`,`hasChanged`), ADD KEY `time` (`time`);
+  ADD PRIMARY KEY (`key`),
+  ADD UNIQUE KEY `userID` (`userID`,`key`,`time`,`hasChanged`),
+  ADD KEY `time` (`time`);
 
 --
--- Indexes for table `uni1_messages`
+-- Indizes für die Tabelle `uni1_messages`
 --
 ALTER TABLE `uni1_messages`
- ADD PRIMARY KEY (`message_id`), ADD KEY `message_sender` (`message_sender`), ADD KEY `message_owner` (`message_owner`,`message_type`,`message_unread`);
+  ADD PRIMARY KEY (`message_id`),
+  ADD KEY `message_sender` (`message_sender`),
+  ADD KEY `message_owner` (`message_owner`,`message_type`,`message_unread`);
 
 --
--- Indexes for table `uni1_message_banned`
+-- Indizes für die Tabelle `uni1_message_banned`
 --
 ALTER TABLE `uni1_message_banned`
- ADD KEY `ID` (`id`), ADD KEY `universe` (`universe`);
+  ADD KEY `ID` (`id`),
+  ADD KEY `universe` (`universe`);
 
 --
--- Indexes for table `uni1_minichat`
+-- Indizes für die Tabelle `uni1_minichat`
 --
 ALTER TABLE `uni1_minichat`
- ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `uni1_multi`
+-- Indizes für die Tabelle `uni1_multi`
 --
 ALTER TABLE `uni1_multi`
- ADD PRIMARY KEY (`multiID`), ADD KEY `userID` (`userID`);
+  ADD PRIMARY KEY (`multiID`),
+  ADD KEY `userID` (`userID`);
 
 --
--- Indexes for table `uni1_news`
+-- Indizes für die Tabelle `uni1_news`
 --
 ALTER TABLE `uni1_news`
- ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `uni1_newsfeed`
+-- Indizes für die Tabelle `uni1_newsfeed`
 --
 ALTER TABLE `uni1_newsfeed`
- ADD PRIMARY KEY (`feedID`);
+  ADD PRIMARY KEY (`feedID`);
 
 --
--- Indexes for table `uni1_notes`
+-- Indizes für die Tabelle `uni1_notes`
 --
 ALTER TABLE `uni1_notes`
- ADD PRIMARY KEY (`id`), ADD KEY `universe` (`universe`), ADD KEY `owner` (`owner`,`time`,`priority`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `universe` (`universe`),
+  ADD KEY `owner` (`owner`,`time`,`priority`);
 
 --
--- Indexes for table `uni1_paypal`
+-- Indizes für die Tabelle `uni1_paypal`
 --
 ALTER TABLE `uni1_paypal`
- ADD KEY `id` (`id`);
+  ADD KEY `id` (`id`);
 
 --
--- Indexes for table `uni1_paypal_log`
+-- Indizes für die Tabelle `uni1_paypal_log`
 --
 ALTER TABLE `uni1_paypal_log`
- ADD KEY `id` (`id`);
+  ADD KEY `id` (`id`);
 
 --
--- Indexes for table `uni1_paysafecard_log`
+-- Indizes für die Tabelle `uni1_paysafecard_log`
 --
 ALTER TABLE `uni1_paysafecard_log`
- ADD PRIMARY KEY (`payID`);
+  ADD PRIMARY KEY (`payID`);
 
 --
--- Indexes for table `uni1_planets`
+-- Indizes für die Tabelle `uni1_planets`
 --
 ALTER TABLE `uni1_planets`
- ADD PRIMARY KEY (`id`), ADD KEY `id_luna` (`id_luna`), ADD KEY `id_owner` (`id_owner`), ADD KEY `destruyed` (`destruyed`), ADD KEY `universe` (`universe`,`galaxy`,`system`,`planet`,`planet_type`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_luna` (`id_luna`),
+  ADD KEY `id_owner` (`id_owner`),
+  ADD KEY `destruyed` (`destruyed`),
+  ADD KEY `universe` (`universe`,`galaxy`,`system`,`planet`,`planet_type`);
 
 --
--- Indexes for table `uni1_raports`
+-- Indizes für die Tabelle `uni1_raports`
 --
 ALTER TABLE `uni1_raports`
- ADD PRIMARY KEY (`rid`), ADD KEY `time` (`time`);
+  ADD PRIMARY KEY (`rid`),
+  ADD KEY `time` (`time`);
 
 --
--- Indexes for table `uni1_reward`
+-- Indizes für die Tabelle `uni1_reward`
 --
 ALTER TABLE `uni1_reward`
- ADD PRIMARY KEY (`rewardId`);
+  ADD PRIMARY KEY (`rewardId`);
 
 --
--- Indexes for table `uni1_session`
+-- Indizes für die Tabelle `uni1_session`
 --
 ALTER TABLE `uni1_session`
- ADD PRIMARY KEY (`userID`), ADD KEY `sessionID` (`sessionID`);
+  ADD PRIMARY KEY (`userID`),
+  ADD KEY `sessionID` (`sessionID`);
 
 --
--- Indexes for table `uni1_shortcuts`
+-- Indizes für die Tabelle `uni1_shortcuts`
 --
 ALTER TABLE `uni1_shortcuts`
- ADD PRIMARY KEY (`shortcutID`), ADD KEY `ownerID` (`ownerID`);
+  ADD PRIMARY KEY (`shortcutID`),
+  ADD KEY `ownerID` (`ownerID`);
 
 --
--- Indexes for table `uni1_statpoints`
+-- Indizes für die Tabelle `uni1_statpoints`
 --
 ALTER TABLE `uni1_statpoints`
- ADD KEY `id_owner` (`id_owner`), ADD KEY `universe` (`universe`), ADD KEY `stat_type` (`stat_type`);
+  ADD KEY `id_owner` (`id_owner`),
+  ADD KEY `universe` (`universe`),
+  ADD KEY `stat_type` (`stat_type`);
 
 --
--- Indexes for table `uni1_ticket`
+-- Indizes für die Tabelle `uni1_ticket`
 --
 ALTER TABLE `uni1_ticket`
- ADD PRIMARY KEY (`ticketID`), ADD KEY `ownerID` (`ownerID`), ADD KEY `universe` (`universe`,`status`);
+  ADD PRIMARY KEY (`ticketID`),
+  ADD KEY `ownerID` (`ownerID`),
+  ADD KEY `universe` (`universe`,`status`);
 
 --
--- Indexes for table `uni1_ticket_answer`
+-- Indizes für die Tabelle `uni1_ticket_answer`
 --
 ALTER TABLE `uni1_ticket_answer`
- ADD PRIMARY KEY (`answerID`);
+  ADD PRIMARY KEY (`answerID`);
 
 --
--- Indexes for table `uni1_ticket_category`
+-- Indizes für die Tabelle `uni1_ticket_category`
 --
 ALTER TABLE `uni1_ticket_category`
- ADD PRIMARY KEY (`categoryID`);
+  ADD PRIMARY KEY (`categoryID`);
 
 --
--- Indexes for table `uni1_topkb`
+-- Indizes für die Tabelle `uni1_topkb`
 --
 ALTER TABLE `uni1_topkb`
- ADD KEY `time` (`universe`,`rid`,`time`);
+  ADD KEY `time` (`universe`,`rid`,`time`);
 
 --
--- Indexes for table `uni1_transport_player`
+-- Indizes für die Tabelle `uni1_transport_player`
 --
 ALTER TABLE `uni1_transport_player`
- ADD PRIMARY KEY (`transportID`);
+  ADD PRIMARY KEY (`transportID`);
 
 --
--- Indexes for table `uni1_users`
+-- Indizes für die Tabelle `uni1_users`
 --
 ALTER TABLE `uni1_users`
- ADD PRIMARY KEY (`id`), ADD KEY `authlevel` (`authlevel`), ADD KEY `ref_bonus` (`ref_bonus`), ADD KEY `universe` (`universe`,`username`,`password`,`onlinetime`,`authlevel`), ADD KEY `ally_id` (`ally_id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `authlevel` (`authlevel`),
+  ADD KEY `ref_bonus` (`ref_bonus`),
+  ADD KEY `universe` (`universe`,`username`,`password`,`onlinetime`,`authlevel`),
+  ADD KEY `ally_id` (`ally_id`);
 
 --
--- Indexes for table `uni1_users_to_acs`
+-- Indizes für die Tabelle `uni1_users_to_acs`
 --
 ALTER TABLE `uni1_users_to_acs`
- ADD KEY `userID` (`userID`), ADD KEY `acsID` (`acsID`);
+  ADD KEY `userID` (`userID`),
+  ADD KEY `acsID` (`acsID`);
 
 --
--- Indexes for table `uni1_users_to_extauth`
+-- Indizes für die Tabelle `uni1_users_to_extauth`
 --
 ALTER TABLE `uni1_users_to_extauth`
- ADD PRIMARY KEY (`id`), ADD KEY `id` (`id`), ADD KEY `account` (`account`,`mode`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id` (`id`),
+  ADD KEY `account` (`account`,`mode`);
 
 --
--- Indexes for table `uni1_users_to_topkb`
+-- Indizes für die Tabelle `uni1_users_to_topkb`
 --
 ALTER TABLE `uni1_users_to_topkb`
- ADD KEY `rid` (`rid`,`role`);
+  ADD KEY `rid` (`rid`,`role`);
 
 --
--- Indexes for table `uni1_users_valid`
+-- Indizes für die Tabelle `uni1_users_valid`
 --
 ALTER TABLE `uni1_users_valid`
- ADD PRIMARY KEY (`validationID`,`validationKey`);
+  ADD PRIMARY KEY (`validationID`,`validationKey`);
 
 --
--- Indexes for table `uni1_vars`
+-- Indizes für die Tabelle `uni1_vars`
 --
 ALTER TABLE `uni1_vars`
- ADD PRIMARY KEY (`elementID`), ADD KEY `class` (`class`);
+  ADD PRIMARY KEY (`elementID`),
+  ADD KEY `class` (`class`);
 
 --
--- Indexes for table `uni1_vars_rapidfire`
+-- Indizes für die Tabelle `uni1_vars_rapidfire`
 --
 ALTER TABLE `uni1_vars_rapidfire`
- ADD KEY `elementID` (`elementID`), ADD KEY `rapidfireID` (`rapidfireID`);
+  ADD KEY `elementID` (`elementID`),
+  ADD KEY `rapidfireID` (`rapidfireID`);
 
 --
--- Indexes for table `uni1_vars_requriements`
+-- Indizes für die Tabelle `uni1_vars_requriements`
 --
 ALTER TABLE `uni1_vars_requriements`
- ADD KEY `elementID` (`elementID`), ADD KEY `requireID` (`requireID`);
+  ADD KEY `elementID` (`elementID`),
+  ADD KEY `requireID` (`requireID`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT für exportierte Tabellen
 --
 
 --
--- AUTO_INCREMENT for table `uni1_achats_log`
+-- AUTO_INCREMENT für Tabelle `uni1_achats_log`
 --
 ALTER TABLE `uni1_achats_log`
-MODIFY `achatID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `achatID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_aks`
+-- AUTO_INCREMENT für Tabelle `uni1_ai_action_log`
+--
+ALTER TABLE `uni1_ai_action_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `uni1_ai_config`
+--
+ALTER TABLE `uni1_ai_config`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT für Tabelle `uni1_aks`
 --
 ALTER TABLE `uni1_aks`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_alliance`
+-- AUTO_INCREMENT für Tabelle `uni1_alliance`
 --
 ALTER TABLE `uni1_alliance`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_alliance_ranks`
+-- AUTO_INCREMENT für Tabelle `uni1_alliance_ranks`
 --
 ALTER TABLE `uni1_alliance_ranks`
-MODIFY `rankID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `rankID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_alliance_request`
+-- AUTO_INCREMENT für Tabelle `uni1_alliance_request`
 --
 ALTER TABLE `uni1_alliance_request`
-MODIFY `applyID` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+  MODIFY `applyID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
 --
--- AUTO_INCREMENT for table `uni1_banned`
+-- AUTO_INCREMENT für Tabelle `uni1_banned`
 --
 ALTER TABLE `uni1_banned`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
--- AUTO_INCREMENT for table `uni1_buddy`
+-- AUTO_INCREMENT für Tabelle `uni1_buddy`
 --
 ALTER TABLE `uni1_buddy`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
 --
--- AUTO_INCREMENT for table `uni1_bunker_log`
+-- AUTO_INCREMENT für Tabelle `uni1_bunker_log`
 --
 ALTER TABLE `uni1_bunker_log`
-MODIFY `logID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `logID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_config`
+-- AUTO_INCREMENT für Tabelle `uni1_config`
 --
 ALTER TABLE `uni1_config`
-MODIFY `uni` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `uni` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_cronjobs`
+-- AUTO_INCREMENT für Tabelle `uni1_cronjobs`
 --
 ALTER TABLE `uni1_cronjobs`
-MODIFY `cronjobID` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
+  MODIFY `cronjobID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
 --
--- AUTO_INCREMENT for table `uni1_diplo`
+-- AUTO_INCREMENT für Tabelle `uni1_diplo`
 --
 ALTER TABLE `uni1_diplo`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_explorations`
+-- AUTO_INCREMENT für Tabelle `uni1_explorations`
 --
 ALTER TABLE `uni1_explorations`
-MODIFY `explorationID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `explorationID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_fleets`
+-- AUTO_INCREMENT für Tabelle `uni1_fleets`
 --
 ALTER TABLE `uni1_fleets`
-MODIFY `fleet_id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1858;
+  MODIFY `fleet_id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1858;
+
 --
--- AUTO_INCREMENT for table `uni1_fleets_manage`
+-- AUTO_INCREMENT für Tabelle `uni1_fleets_manage`
 --
 ALTER TABLE `uni1_fleets_manage`
-MODIFY `manageID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
+  MODIFY `manageID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
 --
--- AUTO_INCREMENT for table `uni1_ipblock`
+-- AUTO_INCREMENT für Tabelle `uni1_ipblock`
 --
 ALTER TABLE `uni1_ipblock`
-MODIFY `ipblockID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ipblockID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_iplog`
+-- AUTO_INCREMENT für Tabelle `uni1_iplog`
 --
 ALTER TABLE `uni1_iplog`
-MODIFY `logID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=212;
+  MODIFY `logID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=212;
+
 --
--- AUTO_INCREMENT for table `uni1_log`
+-- AUTO_INCREMENT für Tabelle `uni1_log`
 --
 ALTER TABLE `uni1_log`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_messages`
+-- AUTO_INCREMENT für Tabelle `uni1_messages`
 --
 ALTER TABLE `uni1_messages`
-MODIFY `message_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `message_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_message_banned`
+-- AUTO_INCREMENT für Tabelle `uni1_message_banned`
 --
 ALTER TABLE `uni1_message_banned`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_minichat`
+-- AUTO_INCREMENT für Tabelle `uni1_minichat`
 --
 ALTER TABLE `uni1_minichat`
-MODIFY `id` int(32) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(32) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_multi`
+-- AUTO_INCREMENT für Tabelle `uni1_multi`
 --
 ALTER TABLE `uni1_multi`
-MODIFY `multiID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `multiID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_news`
+-- AUTO_INCREMENT für Tabelle `uni1_news`
 --
 ALTER TABLE `uni1_news`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_newsfeed`
+-- AUTO_INCREMENT für Tabelle `uni1_newsfeed`
 --
 ALTER TABLE `uni1_newsfeed`
-MODIFY `feedID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `feedID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_notes`
+-- AUTO_INCREMENT für Tabelle `uni1_notes`
 --
 ALTER TABLE `uni1_notes`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_paypal`
+-- AUTO_INCREMENT für Tabelle `uni1_paypal`
 --
 ALTER TABLE `uni1_paypal`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_paypal_log`
+-- AUTO_INCREMENT für Tabelle `uni1_paypal_log`
 --
 ALTER TABLE `uni1_paypal_log`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_paysafecard_log`
+-- AUTO_INCREMENT für Tabelle `uni1_paysafecard_log`
 --
 ALTER TABLE `uni1_paysafecard_log`
-MODIFY `payID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `payID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_planets`
+-- AUTO_INCREMENT für Tabelle `uni1_planets`
 --
 ALTER TABLE `uni1_planets`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1888;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1888;
+
 --
--- AUTO_INCREMENT for table `uni1_reward`
+-- AUTO_INCREMENT für Tabelle `uni1_reward`
 --
 ALTER TABLE `uni1_reward`
-MODIFY `rewardId` int(11) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `rewardId` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_shortcuts`
+-- AUTO_INCREMENT für Tabelle `uni1_shortcuts`
 --
 ALTER TABLE `uni1_shortcuts`
-MODIFY `shortcutID` int(10) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `shortcutID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_ticket`
+-- AUTO_INCREMENT für Tabelle `uni1_ticket`
 --
 ALTER TABLE `uni1_ticket`
-MODIFY `ticketID` int(10) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `ticketID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_ticket_answer`
+-- AUTO_INCREMENT für Tabelle `uni1_ticket_answer`
 --
 ALTER TABLE `uni1_ticket_answer`
-MODIFY `answerID` int(10) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `answerID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_ticket_category`
+-- AUTO_INCREMENT für Tabelle `uni1_ticket_category`
 --
 ALTER TABLE `uni1_ticket_category`
-MODIFY `categoryID` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `categoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
--- AUTO_INCREMENT for table `uni1_transport_player`
+-- AUTO_INCREMENT für Tabelle `uni1_transport_player`
 --
 ALTER TABLE `uni1_transport_player`
-MODIFY `transportID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `transportID` int(11) NOT NULL AUTO_INCREMENT;
+
 --
--- AUTO_INCREMENT for table `uni1_users`
+-- AUTO_INCREMENT für Tabelle `uni1_users`
 --
 ALTER TABLE `uni1_users`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10047;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10047;
+
 --
--- AUTO_INCREMENT for table `uni1_users_valid`
+-- AUTO_INCREMENT für Tabelle `uni1_users_valid`
 --
 ALTER TABLE `uni1_users_valid`
-MODIFY `validationID` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=151;
+  MODIFY `validationID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
