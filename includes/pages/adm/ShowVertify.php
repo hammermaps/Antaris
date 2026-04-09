@@ -61,7 +61,6 @@ function ShowVertify()
 				exit;
 			}
 			
-			curl_close($ch);
 			$FILE2	= file_get_contents(ROOT_PATH.$file);
 			$LOCALHASH	= crc32(preg_replace(array("/(\r\n)|(\r)/", '/(\\/\\*[\\d\\D]*?\\*\\/)/', '/\$I'.'d[^\$]+\$/'), array("\n", '', ''), $FILE2));
 			if($SVNHASH == $LOCALHASH) {

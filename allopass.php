@@ -9,8 +9,7 @@ $db_user = 'antarisl_thisis';
 $db_password = 'EJceRpJcPv3181';
 
 
-mysql_connect($host, $db_user, $db_password);
-mysql_select_db($db_name);
+$mysqli = new mysqli($host, $db_user, $db_password, $db_name);
 function pretty_number($n, $dec = 0)
 {
 	return number_format(floattostring($n, $dec), $dec, ',', '.');
@@ -22,10 +21,10 @@ function floattostring($Numeric, $Pro = 0, $Output = false){
 
 function _rewardPurchase($userId, $pay, $realpay, $received, $credits, $type, $transac, $code, $timer) {
 // Make userid safe to use in query
-$userId = mysql_real_escape_string($userId);
+$userId = $GLOBALS['mysqli']->real_escape_string($userId);
    
-mysql_query("UPDATE `uni1_users` SET `darkmatter` = `darkmatter` + '".$credits."' WHERE `id` = '".mysql_escape_string($userId)."';");
-mysql_query("INSERT INTO `uni1_paysafecard_log` VALUES ('', '".mysql_escape_string($userId)."',  '".$timer."', '".mysql_escape_string($code)."', '".mysql_escape_string($realpay)."','".mysql_escape_string($credits)."', '".mysql_escape_string($type)."', '1', '');");
+$GLOBALS['mysqli']->query("UPDATE `uni1_users` SET `darkmatter` = `darkmatter` + '".$credits."' WHERE `id` = '".$GLOBALS['mysqli']->real_escape_string($userId)."';");
+$GLOBALS['mysqli']->query("INSERT INTO `uni1_paysafecard_log` VALUES ('', '".$GLOBALS['mysqli']->real_escape_string($userId)."',  '".$timer."', '".$GLOBALS['mysqli']->real_escape_string($code)."', '".$GLOBALS['mysqli']->real_escape_string($realpay)."','".$GLOBALS['mysqli']->real_escape_string($credits)."', '".$GLOBALS['mysqli']->real_escape_string($type)."', '1', '');");
 
 
   
@@ -58,6 +57,6 @@ if ($result) {
 }
 
 //Close Connection
-mysql_close();
+$GLOBALS['mysqli']->close();
 
 ?>

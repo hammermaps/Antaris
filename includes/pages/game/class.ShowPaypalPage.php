@@ -92,7 +92,7 @@ class ShowPaypalPage extends AbstractPage
    
 	//$GLOBALS['DATABASE']->query("INSERT INTO `uni1_paypal_log` VALUES (null,".$INFO['player'].",".$INFO['amount'].",".TIMESTAMP.") ;");
 	
-	$GLOBALS['DATABASE']->query("INSERT INTO `uni1_paysafecard_log` VALUES ('', '".mysql_escape_string($user_id)."',  '".TIMESTAMP."', '".$txn_id."', '".$mc_gross."','1', 'Paypal', '1');");
+	$GLOBALS['DATABASE']->query("INSERT INTO `uni1_paysafecard_log` VALUES ('', '".$GLOBALS['DATABASE']->sql_escape($user_id)."',  '".TIMESTAMP."', '".$txn_id."', '".$mc_gross."','1', 'Paypal', '1');");
 	
 	
 	message(pretty_number($INFO['amount']).' Credit have been added to your account. <br><br><a href="?page=overview">Continue</a>');

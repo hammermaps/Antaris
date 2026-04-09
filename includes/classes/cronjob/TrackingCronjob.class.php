@@ -65,6 +65,5 @@ class TrackingCronjob
 		curl_setopt($this->ch, CURLOPT_USERAGENT, "Mozilla/5.0 (compatible; 2Moons/".Config::get('VERSION')."; +http://2moons.cc)");
 		
 		curl_exec($this->ch);
-		curl_close($this->ch);
 	}
 }

@@ -583,7 +583,7 @@ class LightOpenID
                     $this->aliases[$alias] = 'http://axschema.org/' . $field;
                     if (empty($counts[$alias])) $counts[$alias] = 0;
                     $counts[$alias] += 1;
-                    ${$type}[] = $alias;
+                    $$type[] = $alias;
                 }
             }
             foreach ($this->aliases as $alias => $ns) {
@@ -732,7 +732,7 @@ class LightOpenID
             # wants to verify. stripslashes() should solve that problem, but we can't
             # use it when magic_quotes is off.
             $value = $this->data['openid_' . str_replace('.','_',$item)];
-            $params['openid.' . $item] = function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc() ? stripslashes($value) : $value;
+            $params['openid.' . $item] = $value;
 
         }
 

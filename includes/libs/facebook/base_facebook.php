@@ -981,10 +981,8 @@ abstract class BaseFacebook
         'type' => 'CurlException',
         ),
       ));
-      curl_close($ch);
       throw $e;
     }
-    curl_close($ch);
     return $result;
   }
 
@@ -1206,7 +1204,7 @@ abstract class BaseFacebook
       }
 
       if (!empty($retained_params)) {
-        $query = '?'.implode($retained_params, '&');
+        $query = '?'.implode('&', $retained_params);
       }
     }
 
